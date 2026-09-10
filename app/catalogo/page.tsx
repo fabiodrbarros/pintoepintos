@@ -1,1 +1,1 @@
-export { CatalogPage as default } from '@/components/site';
+export { CatalogCoverflow as default } from '@/components/catalog-coverflow';
