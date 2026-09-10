@@ -3098,8 +3098,6 @@ select.site-language:focus-visible {
   z-index: 2;
   inset: 0;
   pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
   transform-origin: center;
   will-change: opacity, transform, clip-path;
 }

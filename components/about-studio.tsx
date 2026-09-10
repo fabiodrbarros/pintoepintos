@@ -37,7 +37,6 @@ export function AboutStudioPage() {
       });
       timeline
         .to(intro.current, { autoAlpha: 0, y: -24, duration: 0.48 }, 0.22)
-        .fromTo(canvas.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.62 }, 0.62)
         .to(state, { progress: 0.48, duration: 1.2, onUpdate: () => { progress.current = state.progress; } }, 0.76)
         .fromTo(history.current, { autoAlpha: 0, y: 100 }, { autoAlpha: 1, y: 0, duration: 0.96 }, 1.42)
         .to({}, { duration: 0.92 })

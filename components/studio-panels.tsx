@@ -4,15 +4,18 @@ import { useEffect, useRef, type MutableRefObject } from 'react';
 import { convexHull, projectiveTransform } from '@/pinto-pintos-transicoes-codex/geometry.mjs';
 import {
   clamp,
-  logoEdgeTextures,
+  logoFaces,
   logoPhoto,
-  logoTextures,
-  panelPose,
+  poseFromFace,
   project,
   segment,
   surfaces,
   viewport,
 } from '@/pinto-pintos-transicoes-codex/choreography.mjs';
+import {
+  referenceEdges,
+  referenceFaces,
+} from '@/pinto-pintos-transicoes-codex/photography.mjs';
 
 type Face = {
   element: HTMLSpanElement;
@@ -57,8 +60,8 @@ function createBody(index: number): Body {
     faceKinds.map((kind) => {
       const source =
         kind === 'front' || kind === 'back'
-          ? logoTextures[index]
-          : logoEdgeTextures[index];
+          ? referenceFaces[index]
+          : referenceEdges[index];
       const face = document.createElement('span');
       face.className = `studio-object-face studio-object-${kind}`;
       const image = sourceImage(source);
@@ -94,7 +97,7 @@ export default function StudioPanels({
     const root = rootRef.current;
     if (!root) return;
 
-    const bodies = Array.from({ length: logoTextures.length }, (_, index) =>
+    const bodies = Array.from({ length: referenceFaces.length }, (_, index) =>
       createBody(index),
     );
     bodies.forEach((body) => root.append(body.element));
@@ -132,7 +135,7 @@ export default function StudioPanels({
       };
 
       bodies.forEach((body, index) => {
-        const pose = panelPose(index, 0, portrait, 0);
+        const pose = poseFromFace(logoFaces[index]);
         const projected = surfaces(pose).map(
           (surface: { kind: string; points: number[][]; visible: boolean }) => ({
             ...surface,
