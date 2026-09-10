@@ -3098,6 +3098,8 @@ select.site-language:focus-visible {
   z-index: 2;
   inset: 0;
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
   transform-origin: center;
   will-change: opacity, transform, clip-path;
 }
@@ -3136,17 +3138,31 @@ select.site-language:focus-visible {
 .studio-intro {
   position: absolute;
   z-index: 4;
-  top: clamp(155px, 20vh, 210px);
+  top: clamp(72px, 10vh, 108px);
   left: var(--space);
-  width: min(39vw, 560px);
+  width: min(72vw, 940px);
+  max-width: none;
 }
 .studio-intro h1 {
-  margin: 0 0 30px;
-  font-size: clamp(38px, 3.7vw, 64px);
-  line-height: 1.08;
-  letter-spacing: -0.045em;
+  margin: 0 0 clamp(30px, 4.2vh, 46px);
+  font-size: clamp(54px, 5vw, 82px);
+  line-height: 1.02;
+  letter-spacing: -0.052em;
 }
 .studio-intro h1 span { color: #997657; }
+.studio-intro .section-label {
+  margin-bottom: clamp(34px, 5vh, 52px);
+}
+.studio-intro > p {
+  max-width: 610px;
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.72;
+}
+.studio-intro .about-origin {
+  max-width: 680px;
+  margin-top: clamp(38px, 6vh, 62px);
+}
 .studio-workshop {
   position: absolute;
   z-index: 3;
@@ -3249,12 +3265,20 @@ select.site-language:focus-visible {
     width: calc(100% - 48px);
   }
   .studio-intro h1 {
-    margin-bottom: 20px;
-    font-size: clamp(31px, 9.5vw, 42px);
+    margin-bottom: 26px;
+    font-size: clamp(38px, 11vw, 48px);
+    line-height: 1.03;
   }
-  .studio-intro .about-origin { display: none; }
+  .studio-intro .section-label { margin-bottom: 30px; }
+  .studio-intro .about-origin {
+    display: flex;
+    margin-top: 28px;
+    padding-top: 18px;
+    gap: 10px 18px;
+    font-size: 9px;
+  }
   .studio-intro > p {
-    max-width: 92%;
+    max-width: 100%;
     font-size: 14px;
     line-height: 1.6;
   }
