@@ -42,7 +42,11 @@ const categoryFallback: CmsCategory[] = defaultCatalogCategories.map(
   }),
 );
 
-export function CatalogCoverflow() {
+export function CatalogCoverflow({
+  useSiteBackground = false,
+}: {
+  useSiteBackground?: boolean;
+} = {}) {
   const { locale, t } = useLocale();
   const items = useCmsItems('catalog', catalogFallback);
   const categories = useCmsCategories('catalog', categoryFallback);
@@ -107,7 +111,10 @@ export function CatalogCoverflow() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.stage} aria-label={t.catalog}>
+      <section
+        className={`${styles.stage}${useSiteBackground ? ` ${styles.siteBackground}` : ''}`}
+        aria-label={t.catalog}
+      >
         <div className={styles.ambientLight} aria-hidden="true" />
 
         <div className={styles.catalogIntro}>
