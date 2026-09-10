@@ -1937,14 +1937,14 @@ select.site-language:focus-visible {
   align-items: center;
   justify-content: center;
   min-width: 0;
-  height: min(64vh, 650px);
+  height: min(70vh, 700px);
 }
 .contact-art .studio-object {
   position: relative;
   inset: auto;
-  width: 120%;
+  width: 132%;
   height: 100%;
-  flex: 0 0 120%;
+  flex: 0 0 132%;
   overflow: visible;
 }
 .contact-details {
@@ -2122,11 +2122,11 @@ select.site-language:focus-visible {
   }
   .contact-art {
     order: 1;
-    height: min(82vw, 390px);
+    height: min(88vw, 420px);
   }
   .contact-art .studio-object {
-    width: 118%;
-    flex-basis: 118%;
+    width: 128%;
+    flex-basis: 128%;
   }
   .contact-scene .contact-form {
     order: 2;
