@@ -7,22 +7,87 @@ export const company = {
 };
 // Inserir apenas estatísticas confirmadas e o caminho do logótipo original.
 export const stats: { value: string; label: string }[] = [];
-export const projects = [
+export const catalogItems = [
+  { id: 'cozinhas', title: 'Cozinhas', image: '/catalogo/cozinhas.jpg' },
+  { id: 'roupeiros', title: 'Roupeiros', image: '/catalogo/roupeiros.jpg' },
   {
-    slug: 'materia-e-luz',
-    title: 'Matéria e luz',
-    category: 'Estudo visual',
-    image: '/interior.png',
-    description:
-      'Madeira, luz natural e superfícies minerais. Um estudo de ambiente que traduz a direção visual da marca.',
+    id: 'portas-janelas',
+    title: 'Portas e Janelas',
+    image: '/catalogo/portas-janelas.jpg',
+  },
+  { id: 'moveis', title: 'Móveis', image: '/catalogo/moveis.jpg' },
+  {
+    id: 'pavimentos',
+    title: 'Pavimentos',
+    image: '/catalogo/pavimentos.png',
+    icon: true,
   },
   {
-    slug: 'geometria-em-madeira',
-    title: 'Geometria em madeira',
-    category: 'Estudo visual',
-    image: '/wood-composition.png',
-    description:
-      'Três painéis, duas tonalidades e uma linguagem comum. Uma composição de referência inspirada na geometria da marca.',
+    id: 'tetos-revestimentos',
+    title: 'Tetos e Revestimentos',
+    image: '/catalogo/tetos-revestimentos.jpg',
+  },
+];
+export const projects = [
+  {
+    slug: 'moradia-vilafonche',
+    title: 'Moradia — Vilafonche',
+    category: 'Moradia',
+    region: 'portugal',
+    client: 'Particular',
+    location: 'Vila Fonche, Arcos de Valdevez',
+    date: '2016',
+    services:
+      'Porta de entrada personalizada em carvalho com cor wengué, portas interiores lacadas, escadas em carvalho com cor wengué, pavimento flutuante Quick-Step e cozinha personalizada em carvalho lacado.',
+    materials:
+      'Madeira maciça de carvalho, MDF hidrófugo e pavimento flutuante Quick-Step.',
+    image: '/projetos/moradia-vilafonche/1.jpg',
+    images: [
+      '/projetos/moradia-vilafonche/1.jpg',
+      '/projetos/moradia-vilafonche/2.jpg',
+      '/projetos/moradia-vilafonche/3.jpg',
+      '/projetos/moradia-vilafonche/4.jpg',
+    ],
+  },
+  {
+    slug: 'moradia-serreleis',
+    title: 'Moradia — Serreleis',
+    category: 'Moradia',
+    region: 'portugal',
+    client: 'Particular',
+    location: 'Serreleis, Viana do Castelo',
+    date: '2016',
+    services:
+      'Portas de entrada em lacado preto mate, revestimentos em nogueira, pavimento flutuante, mobiliário de escadas, portas interiores, roupeiros e móveis iluminados por medida.',
+    materials:
+      'Folheado de nogueira, MDF hidrófugo e pavimento Kronotex Mammut.',
+    image: '/projetos/moradia-serreleis/1.jpg',
+    images: [
+      '/projetos/moradia-serreleis/1.jpg',
+      '/projetos/moradia-serreleis/2.jpg',
+      '/projetos/moradia-serreleis/3.jpg',
+      '/projetos/moradia-serreleis/4.jpg',
+    ],
+  },
+  {
+    slug: 'moradia-bordeus',
+    title: 'Moradia — Bordéus',
+    category: 'Moradia',
+    region: 'franca',
+    client: 'Particular',
+    location: 'Bordéus, França',
+    date: '2014',
+    services:
+      'Cozinha em termolaminado branco brilho, portas interiores e degraus em carvalho, roupeiros e móvel de casa de banho em termolaminado branco brilho.',
+    materials:
+      'Termolaminado W1000 Branco Premium, Compac Nocturno, Compac Branco Absoluto e folheado de carvalho.',
+    image: '/projetos/moradia-bordeus/1.jpg',
+    images: [
+      '/projetos/moradia-bordeus/1.jpg',
+      '/projetos/moradia-bordeus/2.jpg',
+      '/projetos/moradia-bordeus/3.jpg',
+      '/projetos/moradia-bordeus/4.jpg',
+    ],
   },
 ];
 export const services = [

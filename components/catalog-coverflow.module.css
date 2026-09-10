@@ -1,0 +1,265 @@
+.page {
+  --ink: #29221d;
+  min-height: 100svh;
+  overflow: clip;
+  color: var(--ink);
+  background: #f3efe8;
+}
+
+.stage {
+  position: relative;
+  min-height: max(600px, 100svh);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(251, 249, 246, 0.08),
+      rgba(237, 226, 213, 0.12)
+    ),
+    url('/catalogo/catalog-scroll-background.png') center / cover no-repeat;
+}
+
+.stage::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: 0.17;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.stage::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  right: -14vw;
+  bottom: 12vh;
+  width: 70vw;
+  height: 36vh;
+  pointer-events: none;
+  background: linear-gradient(
+    118deg,
+    transparent 0 44%,
+    rgba(146, 116, 91, 0.075) 45% 48%,
+    transparent 49% 56%,
+    rgba(146, 116, 91, 0.055) 57% 61%,
+    transparent 62%
+  );
+  filter: blur(2px);
+  transform: skewY(-8deg);
+}
+
+.ambientLight {
+  position: absolute;
+  z-index: 0;
+  top: -28%;
+  left: 48%;
+  width: 55vw;
+  height: 85vh;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.38);
+  filter: blur(80px);
+  transform: translateX(-50%);
+}
+
+.catalogIntro {
+  position: absolute;
+  z-index: 18;
+  top: clamp(96px, 12vh, 128px);
+  left: clamp(24px, 5vw, 76px);
+  width: min(31vw, 465px);
+  color: var(--ink);
+}
+
+.catalogIntro h1 {
+  margin: 0;
+  font-family: inherit;
+  font-size: clamp(1.65rem, 2.35vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+
+.catalogIntro h1 span {
+  display: block;
+  color: #a78364;
+}
+
+.introRule {
+  display: block;
+  width: 52px;
+  height: 1px;
+  margin: clamp(24px, 3.5vh, 38px) 0 clamp(20px, 3vh, 32px);
+  background: rgba(42, 34, 29, 0.72);
+}
+
+.catalogIntro p {
+  max-width: 390px;
+  margin: 0;
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  line-height: 1.55;
+}
+
+.carouselViewport {
+  position: absolute;
+  z-index: 2;
+  inset: clamp(118px, 14vh, 160px) 0 clamp(102px, 13vh, 132px);
+  display: grid;
+  place-items: center;
+  overflow: visible;
+}
+
+.carouselMount {
+  width: min(80vw, 1100px, calc(181.818svh - 454.545px));
+  min-width: 560px;
+  overflow: visible;
+}
+
+.empty {
+  margin: 0;
+  color: rgba(42, 34, 29, 0.7);
+  font-size: 0.95rem;
+}
+
+.filterBlock {
+  position: absolute;
+  z-index: 30;
+  bottom: clamp(22px, 3vh, 36px);
+  left: 50%;
+  width: min(94vw, 1180px);
+  transform: translateX(-50%);
+}
+
+.filters {
+  display: flex;
+  width: 100%;
+  height: 64px;
+  align-items: stretch;
+  padding: 0;
+  border-block: 1px solid rgba(67, 52, 42, 0.08);
+  background: transparent;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filters > button {
+  position: relative;
+  display: grid;
+  flex: 1 1 0;
+  min-width: 0;
+  align-content: center;
+  gap: 5px;
+  overflow: visible;
+  padding: 8px 16px;
+  border: 0;
+  border-left: 1px solid rgba(55, 44, 36, 0.34);
+  background: transparent;
+  color: rgba(42, 34, 29, 0.72);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    background 220ms ease;
+}
+
+.filters > button:last-child {
+  border-right: 1px solid rgba(55, 44, 36, 0.34);
+}
+
+.filters > button:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.filters small {
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.07em;
+}
+
+.filters > button > span {
+  overflow: hidden;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filters .filterActive {
+  color: var(--ink);
+}
+
+.filters .filterActive::after {
+  content: '';
+  position: absolute;
+  z-index: 4;
+  bottom: -1px;
+  left: 16px;
+  width: 34px;
+  height: 2px;
+  background: var(--ink);
+}
+
+@media (max-width: 767px) {
+  .catalogIntro {
+    top: 88px;
+    left: 22px;
+    width: min(88vw, 440px);
+  }
+
+  .catalogIntro h1 {
+    font-size: clamp(1.65rem, 6vw, 2rem);
+  }
+
+  .introRule {
+    margin-block: 22px 20px;
+  }
+
+  .catalogIntro p {
+    max-width: 360px;
+    font-size: 0.9rem;
+  }
+
+  .carouselViewport {
+    inset: 110px 0 112px;
+  }
+
+  .carouselMount {
+    width: min(86vw, calc(181.818svh - 429.091px));
+    min-width: 520px;
+    transform: translateX(-1.5%);
+  }
+
+  .filterBlock {
+    bottom: 20px;
+    width: calc(100% - 32px);
+  }
+
+  .filters {
+    height: 62px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .filters > button {
+    flex: 0 0 132px;
+    padding-inline: 12px;
+  }
+
+  .filters .filterActive::after {
+    left: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filters > button {
+    transition: none;
+  }
+}

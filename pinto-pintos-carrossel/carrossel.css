@@ -1,0 +1,295 @@
+/* Scoped component styles: no page background, body reset or global scroll lock. */
+.pp-carousel,
+.pp-carousel *,
+.pp-image-dialog,
+.pp-image-dialog * {
+  box-sizing: border-box;
+}
+.pp-carousel {
+  --carousel-start: 15%;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000/550;
+  isolation: isolate;
+  touch-action: pan-y;
+  color: #302a24;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.pp-carousel button,
+.pp-image-dialog button {
+  appearance: none;
+  color: inherit;
+  font: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  background: none;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: normal;
+  -webkit-tap-highlight-color: transparent;
+}
+.pp-carousel button:focus-visible {
+  outline: 2px solid #806047;
+  outline-offset: 5px;
+}
+.pp-panels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.pp-panel {
+  position: absolute;
+  display: block;
+  isolation: isolate;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.pp-solid-panel[hidden] {
+  display: none;
+}
+.pp-carousel.pp-static .pp-arrow {
+  display: none;
+}
+.pp-solid-body {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.pp-solid-surface {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.pp-solid-front {
+  z-index: 2;
+  background-color: #6d4a32;
+}
+.pp-solid-surface[hidden] {
+  display: none;
+}
+.pp-solid-surface img {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1672px;
+  height: 941px;
+  max-width: none;
+  transform-origin: 0 0;
+  backface-visibility: visible;
+}
+.pp-solid-back {
+  filter: brightness(0.76);
+}
+.pp-solid-right,
+.pp-solid-left {
+  filter: brightness(0.56);
+}
+.pp-solid-top {
+  filter: brightness(0.86);
+}
+.pp-solid-bottom {
+  filter: brightness(0.5);
+}
+.pp-carousel .pp-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(30px, 2.15vw, 42px);
+  height: clamp(30px, 2.15vw, 42px);
+  border: 1px solid #96918a;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  z-index: 20000;
+  background: #f5f0e644;
+  transition: background 0.2s;
+}
+.pp-arrow:hover {
+  background: #fff9;
+}
+.pp-arrow svg {
+  width: 52%;
+  height: 52%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+}
+.pp-previous {
+  right: calc(100% - var(--carousel-start) + 1.8vw);
+}
+.pp-next {
+  left: calc(100% + 1.8vw);
+}
+.pp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pp-carousel .pp-solid-panel {
+  cursor: zoom-in;
+}
+.pp-image-dialog {
+  --photo-ratio: 0.7;
+  position: fixed;
+  inset: 0;
+  height: auto;
+  width: min(88vw, calc(82svh * var(--photo-ratio)));
+  aspect-ratio: var(--photo-ratio);
+  max-width: none;
+  max-height: 86svh;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #fff6;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #eae2d6;
+  color: #f7f2e9;
+  box-shadow:
+    0 40px 130px #100c09a6,
+    0 8px 35px #100c0955;
+}
+.pp-image-dialog[open] {
+  animation: pp-image-reveal 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.pp-image-dialog::backdrop {
+  background: #17130ee0;
+  backdrop-filter: blur(14px) saturate(0.7);
+  -webkit-backdrop-filter: blur(14px) saturate(0.7);
+  animation: pp-backdrop-reveal 0.28s ease both;
+}
+.pp-image-dialog-photo {
+  position: absolute;
+  inset: 7px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #ac9279;
+}
+.pp-image-dialog-photo img {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1672px;
+  height: 941px;
+  max-width: none;
+  transform-origin: 0 0;
+  user-select: none;
+  pointer-events: none;
+}
+.pp-image-dialog .pp-image-dialog-close {
+  position: absolute;
+  top: 21px;
+  right: 21px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #fff6;
+  border-radius: 50%;
+  background: #201b1766;
+  color: white;
+  backdrop-filter: blur(12px);
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.pp-image-dialog-close svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+}
+.pp-image-dialog-close:hover {
+  background: #201b17b3;
+  transform: rotate(90deg);
+}
+.pp-image-dialog-close:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+.pp-image-dialog.pp-is-closing {
+  animation: pp-image-dismiss 0.18s ease forwards;
+}
+.pp-image-dialog.pp-is-closing::backdrop {
+  animation: pp-backdrop-dismiss 0.18s ease forwards;
+}
+@keyframes pp-image-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes pp-image-dismiss {
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@keyframes pp-backdrop-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pp-backdrop-dismiss {
+  to {
+    opacity: 0;
+  }
+}
+@media (max-width: 600px) {
+  .pp-image-dialog .pp-image-dialog-close {
+    top: 17px;
+    right: 17px;
+  }
+  .pp-image-dialog-photo {
+    inset: 5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-image-dialog[open],
+  .pp-image-dialog::backdrop,
+  .pp-image-dialog.pp-is-closing,
+  .pp-image-dialog.pp-is-closing::backdrop {
+    animation: none;
+  }
+  .pp-image-dialog .pp-image-dialog-close {
+    transition: none;
+  }
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+  .pp-carousel .pp-previous {
+    right: calc(100% - var(--carousel-start) + 1vw);
+  }
+  .pp-carousel .pp-next {
+    left: calc(100% + 1vw);
+  }
+  .pp-carousel .pp-arrow {
+    width: 28px;
+    height: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-carousel .pp-arrow {
+    transition: none;
+  }
+}

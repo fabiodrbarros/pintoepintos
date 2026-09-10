@@ -1,0 +1,41 @@
+{
+  "source_commit": "08581a3f637e375af1dce992b36702b4dd1645f4",
+  "assets": {
+    "catalog/cozinha.png": {
+      "bytes": 626,
+      "sha256": "c80492ef8e9e04e3df3914f551bbe8a1d530109b11bc17626758da6660dcbaf5"
+    },
+    "catalog/moveis.png": {
+      "bytes": 685,
+      "sha256": "278be3565afbf2530657e8c50002fc8345b76b77a95e8af66c27ef334033ba78"
+    },
+    "catalog/pavimentos.png": {
+      "bytes": 356,
+      "sha256": "e65ef48063bcabc0299d04e0398cec23877c9cb9d755bb03566bf1dcc6ab8c8b"
+    },
+    "catalog/portas.png": {
+      "bytes": 657,
+      "sha256": "8636564b74b2ab5840630c21b232f67a113dae70912266c41abe5eb86c9ec122"
+    },
+    "catalog/revestimentos.png": {
+      "bytes": 891,
+      "sha256": "e6dce77182a35290a87a1bc56c6c6c74fe9b17c51c89d0cf08ffc29e213e053e"
+    },
+    "catalog/roupeiros.png": {
+      "bytes": 669,
+      "sha256": "7554647e817d365ae485edd2b2f46910a733e1bc6dd0917f7b779e5ad325980e"
+    },
+    "room-wall-only.png": {
+      "bytes": 1609756,
+      "sha256": "4e48705f831f4688617c383d6cebb354e8128625d37085fca10a5cdff9d6eb3c"
+    },
+    "shelf-photo-v2.png": {
+      "bytes": 2234028,
+      "sha256": "9199390c5eb1e9cf41529a5c8d1bf83ca8500758dcbb70b9caaa5a91617bc9f0"
+    },
+    "wood-logo-reference.png": {
+      "bytes": 2262729,
+      "sha256": "14c1622830c3402daa7d7a46636122e8107b6fccfc121bd7ff7267204dbd5783"
+    }
+  }
+}

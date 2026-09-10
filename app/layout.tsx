@@ -1,25 +1,25 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import './globals.css';
-import { Header, Footer } from '@/components/site';
+import { SiteShell } from '@/components/site-shell';
+import { LocaleProvider } from '@/components/locale';
+import type { Locale } from '@/lib/cms-types';
 export const metadata: Metadata = {
   title: 'Pinto & Pintos — Carpintaria à medida',
   description:
     'Projetamos, fabricamos e instalamos soluções de carpintaria à medida.',
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const savedLocale = (await cookies()).get('pintos_locale')?.value;
+  const locale: Locale = savedLocale === 'en' || savedLocale === 'fr' ? savedLocale : 'pt';
   return (
-    <html lang="pt-PT">
+    <html lang={locale === 'pt' ? 'pt-PT' : locale}>
       <body>
-        <a className="skip" href="#main">
-          Saltar para o conteúdo
-        </a>
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
+        <LocaleProvider initialLocale={locale}><SiteShell>{children}</SiteShell></LocaleProvider>
       </body>
     </html>
   );
