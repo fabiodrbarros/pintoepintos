@@ -1,6 +1,7 @@
 import 'server-only';
 
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
+import { createRequire } from 'node:module';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -9,6 +10,17 @@ import type { CmsCategory, CmsItem, ContentKind } from '@/lib/cms-types';
 import { categoriesFor } from '@/lib/categories';
 
 const databasePath = process.env.DATABASE_PATH || './data/site.db';
+const runtimeRequire = createRequire(import.meta.url);
+
+function openDatabase(path: string): Database.Database {
+  const packageName = ['better', 'sqlite3'].join('-');
+  const loaded = runtimeRequire(packageName) as
+    | typeof Database
+    | { default: typeof Database };
+  const DatabaseConstructor =
+    typeof loaded === 'function' ? loaded : loaded.default;
+  return new DatabaseConstructor(path);
+}
 
 type GlobalDatabase = typeof globalThis & {
   __pintosDb?: Database.Database;
@@ -137,7 +149,7 @@ export function getDb() {
   const scope = globalThis as GlobalDatabase;
   if (!scope.__pintosDb) {
     mkdirSync(dirname(databasePath), { recursive: true });
-    scope.__pintosDb = new Database(databasePath);
+    scope.__pintosDb = openDatabase(databasePath);
     initialize(scope.__pintosDb);
   }
   return scope.__pintosDb;
