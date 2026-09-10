@@ -3101,6 +3101,38 @@ select.site-language:focus-visible {
   transform-origin: center;
   will-change: opacity, transform, clip-path;
 }
+.studio-object {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.studio-object.is-ready {
+  opacity: 1;
+}
+.studio-object-body {
+  position: absolute;
+  filter: drop-shadow(8px 16px 12px rgba(59, 37, 19, .16));
+}
+.studio-object-hull,
+.studio-object-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.studio-object-face[hidden] {
+  display: none;
+}
+.studio-object-face img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  user-select: none;
+  pointer-events: none;
+}
 .studio-intro {
   position: absolute;
   z-index: 4;
