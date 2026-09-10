@@ -123,9 +123,10 @@ export default function StudioPanels({
       const startScale = portrait ? 0.72 : 0.82;
       const settledScale = portrait ? 0.43 : 0.76;
       const scaleFactor =
-        startScale +
-        (settledScale - startScale) * moveLeft -
-        0.06 * descend * (1 - moveLeft);
+        (startScale +
+          (settledScale - startScale) * moveLeft -
+          0.06 * descend * (1 - moveLeft)) *
+        (contactMode ? 1.26 : 1);
       const startX = contactMode || portrait ? 0 : width * 0.23;
       const finalX = portrait ? -width * 0.18 : -width * 0.2;
       const descendedY = portrait ? height * 0.2 : height * 0.17;
