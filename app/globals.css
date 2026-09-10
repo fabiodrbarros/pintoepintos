@@ -12,6 +12,7 @@
   --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --popover: #f7f5f0;
   --popover-foreground: #292821;
+  --site-environment-image: url('/interior.png');
 }
 * {
   box-sizing: border-box;
@@ -33,7 +34,11 @@ html {
 }
 body {
   margin: 0;
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--site-environment-image);
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
   color: var(--text);
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -2375,11 +2380,11 @@ select.site-language:focus-visible {
 /* Catálogo — grelha visual filtrável. */
 .catalog-page {
   --catalog-gutter: var(--space);
-  background: #f7f5f0;
+  background: transparent;
 }
 .catalog-browser {
   padding: 42px var(--catalog-gutter) 70px;
-  background: linear-gradient(110deg, #faf9f6 0%, #f4f1ec 56%, #e8e2d9 100%);
+  background: linear-gradient(110deg, rgba(250,249,246,.95) 0%, rgba(244,241,236,.94) 56%, rgba(232,226,217,.94) 100%);
 }
 .catalog-layout {
   display: grid;
@@ -2729,7 +2734,7 @@ select.site-language:focus-visible {
 }
 
 .about-page {
-  background: #f7f5f0;
+  background: transparent;
 }
 .about-opening {
   position: relative;
@@ -2748,7 +2753,7 @@ select.site-language:focus-visible {
   position: absolute;
   z-index: -1;
   inset: -3%;
-  background: url('../pinto-pintos-transicoes-codex/assets/room-wall-only.png') center / cover no-repeat;
+  background: var(--site-environment-image) center / cover no-repeat;
 }
 .about-page > .about-opening::after {
   content: '';
@@ -3078,7 +3083,7 @@ select.site-language:focus-visible {
 .studio-sequence {
   position: relative;
   height: 600svh;
-  background: linear-gradient(110deg, #faf9f6 0%, #f4f1ec 56%, #e8e2d9 100%);
+  background: #f6f4ef var(--site-environment-image) center / cover fixed no-repeat;
 }
 .studio-pin {
   position: sticky;
@@ -3366,7 +3371,7 @@ select.site-language:focus-visible {
 }
 .projects-browser {
   padding: 42px var(--space) 90px;
-  background: linear-gradient(110deg, #faf9f6 0%, #f4f1ec 56%, #e8e2d9 100%);
+  background: linear-gradient(110deg, rgba(250,249,246,.95) 0%, rgba(244,241,236,.94) 56%, rgba(232,226,217,.94) 100%);
 }
 .projects-layout {
   display: grid;
@@ -3484,7 +3489,7 @@ select.site-language:focus-visible {
   color: #f7f5f0;
 }
 .project-detail-page {
-  background: #f7f5f0;
+  background: transparent;
 }
 .project-detail-intro {
   min-height: 78svh;
@@ -3706,7 +3711,9 @@ select.site-language:focus-visible {
   gap: clamp(48px, 7vw, 110px);
   align-items: start;
   padding: 145px var(--space) 60px;
-  background: var(--background);
+  background:
+    linear-gradient(rgba(247,245,240,.92), rgba(247,245,240,.92)),
+    var(--site-environment-image) center / cover fixed no-repeat;
 }
 .project-showcase-media {
   min-width: 0;

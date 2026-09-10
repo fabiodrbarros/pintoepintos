@@ -3,7 +3,7 @@
 .pinto-flow, .pinto-flow *, .pinto-flow *::before, .pinto-flow *::after { box-sizing:border-box; }
 .pinto-flow.story { position:relative; height:790svh; }
 .pinto-flow .cinema { position:sticky; top:var(--pinto-flow-top); width:100%; height:calc(100svh - var(--pinto-flow-top)); overflow:hidden; isolation:isolate; background:#e9e0d4; }
-.pinto-flow .room { position:absolute; inset:-3%; background:url('assets/room-wall-only.png') center/cover no-repeat; transform-origin:60% 56%; will-change:transform; }
+.pinto-flow .room { position:absolute; inset:-3%; background:var(--site-environment-image, url('/interior.png')) center/cover no-repeat; transform-origin:60% 56%; will-change:transform; }
 .pinto-flow .wood-world { position:absolute; inset:0; z-index:3; min-inline-size:0; margin:0; padding:0; border:0; pointer-events:none; opacity:0; transition:opacity .6s; }
 .pinto-flow.is-ready .wood-world { opacity:1; }
 .pinto-flow .wood-body { position:absolute; }
