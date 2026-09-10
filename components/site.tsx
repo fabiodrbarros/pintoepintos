@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowUpRight,
@@ -26,6 +26,7 @@ import type { CmsCategory, CmsItem } from '@/lib/cms-types';
 import { LanguageSelect, localized, translatedCatalogCategory, translatedCategory, useLocale } from '@/components/locale';
 import { useCmsCategories, useCmsItems } from '@/components/use-cms';
 import { PintoFlow } from '@/components/pinto-flow';
+import StudioPanels from '@/components/studio-panels';
 import { catalogCategories as defaultCatalogCategories, projectCategories as defaultProjectCategories } from '@/lib/categories';
 import heroWoodLogo from '@/pinto-pintos-transicoes-codex/assets/wood-logo-reference.png';
 const nav = [
@@ -824,6 +825,7 @@ export function ContactForm() {
 }
 export function ContactPage() {
   const { t } = useLocale();
+  const panelProgress = useRef(0);
   return (
     <section className="contact-scene">
       <Image
@@ -836,7 +838,7 @@ export function ContactPage() {
         sizes="100vw"
       />
       <div className="contact-art">
-        <WoodPanels size="small" perspective={0.4} />
+        <StudioPanels progress={panelProgress} mode="contact" />
       </div>
       <div className="contact-details">
         <PageIntro

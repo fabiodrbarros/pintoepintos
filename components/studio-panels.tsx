@@ -87,9 +87,10 @@ function faceArea(points: number[][]) {
 
 export default function StudioPanels({
   progress,
+  mode = 'studio',
 }: {
   progress: MutableRefObject<number>;
-  mode?: 'studio' | 'home';
+  mode?: 'studio' | 'home' | 'contact';
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -109,6 +110,7 @@ export default function StudioPanels({
     const render = () => {
       const width = root.clientWidth;
       const height = root.clientHeight;
+      const contactMode = mode === 'contact';
       const portrait = width < 760 && height > width;
       const targetProgress = clamp(progress.current);
       displayedProgress = reducedMotion.matches
@@ -124,7 +126,7 @@ export default function StudioPanels({
         startScale +
         (settledScale - startScale) * moveLeft -
         0.06 * descend * (1 - moveLeft);
-      const startX = portrait ? 0 : width * 0.23;
+      const startX = contactMode || portrait ? 0 : width * 0.23;
       const finalX = portrait ? -width * 0.18 : -width * 0.2;
       const descendedY = portrait ? height * 0.2 : height * 0.17;
       const finalY = portrait ? -height * 0.2 : 0;
@@ -191,15 +193,18 @@ export default function StudioPanels({
       });
 
       root.classList.add('is-ready');
-      animationFrame = requestAnimationFrame(render);
+      if (!contactMode) animationFrame = requestAnimationFrame(render);
     };
 
     animationFrame = requestAnimationFrame(render);
+    const resizeObserver = mode === 'contact' ? new ResizeObserver(render) : null;
+    if (resizeObserver) resizeObserver.observe(root);
     return () => {
       cancelAnimationFrame(animationFrame);
+      resizeObserver?.disconnect();
       bodies.forEach((body) => body.element.remove());
     };
-  }, [progress]);
+  }, [mode, progress]);
 
   return <div ref={rootRef} className="studio-object" aria-hidden="true" />;
 }
