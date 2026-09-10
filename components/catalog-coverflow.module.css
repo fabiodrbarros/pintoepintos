@@ -27,7 +27,7 @@
       rgba(251, 249, 246, 0.08),
       rgba(237, 226, 213, 0.12)
     ),
-    url('/interior.png') center / cover no-repeat;
+    url('/site-background.png') center / cover no-repeat;
 }
 
 .stage::before {

@@ -12,7 +12,7 @@
   --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --popover: #f7f5f0;
   --popover-foreground: #292821;
-  --site-environment-image: url('/interior.png');
+  --site-environment-image: url('/site-background.png');
 }
 * {
   box-sizing: border-box;

@@ -828,7 +828,7 @@ export function ContactPage() {
     <section className="contact-scene">
       <Image
         className="contact-environment"
-        src="/interior.png"
+        src="/site-background.png"
         alt=""
         fill
         unoptimized
