@@ -4,10 +4,11 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import { Suspense, useRef, type MutableRefObject } from 'react';
 import * as THREE from 'three';
+import heroWoodLogo from '@/pinto-pintos-transicoes-codex/assets/wood-logo-reference.png';
 
 function Scene({ progress, mode }: { progress: MutableRefObject<number>; mode: 'studio' | 'home' }) {
   const mark = useRef<THREE.Group>(null);
-  const source = useTexture('/wood-panels.png');
+  const source = useTexture(heroWoodLogo.src);
   const { viewport } = useThree();
   const portrait = viewport.aspect < 1;
   const baseX = portrait ? (mode === 'home' ? 0.08 : 0) : (mode === 'home' ? 0.45 : 1.1);
