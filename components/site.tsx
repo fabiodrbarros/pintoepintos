@@ -29,11 +29,10 @@ import { PintoFlow } from '@/components/pinto-flow';
 import { catalogCategories as defaultCatalogCategories, projectCategories as defaultProjectCategories } from '@/lib/categories';
 import heroWoodLogo from '@/pinto-pintos-transicoes-codex/assets/wood-logo-reference.png';
 const nav = [
-  ['/projetos', 'Projetos'],
-  ['/catalogo', 'Catálogo'],
-  ['/sobre', 'A Carpintaria'],
-  ['/contactos', 'Contactos'],
-];
+  ['/catalogo', 'Catálogo', 1],
+  ['/sobre', 'A Carpintaria', 2],
+  ['/contactos', 'Contactos', 3],
+] as const;
 const catalogFallback: CmsItem[] = catalogItems.map((item, index) => ({
   id: item.id, kind: 'catalog', slug: item.id, category: item.id,
   title: { pt: item.title, en: '', fr: '' }, description: { pt: '', en: '', fr: '' },
@@ -72,7 +71,9 @@ export function MobileMenu({ editorial = false }: { editorial?: boolean }) {
   const [open, setOpen] = useState(false);
   const path = usePathname();
   const { t } = useLocale();
-  const translatedNav = nav.map(([url], index) => [url, t.nav[index]] as const);
+  const translatedNav = nav.map(([url, , translationIndex]) =>
+    [url, t.nav[translationIndex]] as const,
+  );
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
@@ -166,7 +167,6 @@ export function Header() {
     path === '/contactos' ||
     path === '/sobre' ||
     path === '/sobre-studio' ||
-    path === '/projetos' ||
     path.startsWith('/catalogo') ||
     projectDetail;
   return (
@@ -174,13 +174,13 @@ export function Header() {
       className={`header ${editorial ? 'header-editorial' : ''}${projectDetail ? ' header-project-detail' : ''}`}
     >
       <nav className="desktop-nav">
-        {nav.map(([url], index) => (
+        {nav.map(([url, , translationIndex]) => (
           <Link
             aria-current={path === url ? 'page' : undefined}
             key={url}
             href={url}
           >
-            {t.nav[index]}
+            {t.nav[translationIndex]}
           </Link>
         ))}
       </nav>
@@ -217,9 +217,9 @@ export function Footer() {
 
         <nav className="footer-navigation" aria-label="Explorar o site">
           <strong>{t.explore}</strong>
-          {nav.map(([url], index) => (
+          {nav.map(([url, , translationIndex]) => (
             <Link key={url} href={url}>
-              {t.nav[index]}
+              {t.nav[translationIndex]}
             </Link>
           ))}
         </nav>
@@ -663,96 +663,6 @@ export function CatalogPage() {
     </div>
   );
 }
-export function ProjectsPage() {
-  const [activeType, setActiveType] = useState('todos');
-  const { locale, t } = useLocale();
-  const cmsProjects = useCmsItems('project', projectFallback);
-  const cmsProjectCategories = useCmsCategories('project', projectCategoryFallback);
-  const visibleProjects = cmsProjects.filter(
-    (project) => activeType === 'todos' || activeType === project.category,
-  );
-  const categoryName = (slug: string) => {
-    const category = cmsProjectCategories.find((item) => item.slug === slug);
-    return category?.name[locale] || translatedCategory(category?.name.pt || slug, locale);
-  };
-
-  return (
-    <div className="catalog-page projects-page">
-      <section className="about-opening catalog-opening">
-        <Reveal className="about-opening-copy">
-          <SectionLabel>{t.projects}</SectionLabel>
-          <h1>
-            <span className="projects-title-line">{t.projectsTitle1}</span>
-            <span className="projects-title-line projects-title-accent">
-              {t.projectsTitle2}
-            </span>
-          </h1>
-          <p>{t.projectsIntro}</p>
-        </Reveal>
-        <div className="about-opening-art">
-          <WoodPanels perspective={0.25} interactive={false} />
-          <p className="about-opening-aside">
-            <span />
-            Da matéria
-            <br />
-            ao espaço
-            <i />
-          </p>
-        </div>
-      </section>
-      <section className="projects-browser" aria-label="Projetos realizados">
-        <div className="projects-layout">
-          <aside className="projects-filters" aria-label="Filtrar projetos">
-            <SectionLabel>{t.filter}</SectionLabel>
-            {([['todos', t.all] as const, ...cmsProjectCategories.map((category) => [category.slug, category.name[locale] || translatedCategory(category.name.pt, locale)] as const)]).map(([value, label]) => (
-              <button
-                type="button"
-                key={value}
-                className={activeType === value ? 'is-active' : ''}
-                aria-pressed={activeType === value}
-                onClick={() => setActiveType(value)}
-              >
-                {label}
-              </button>
-            ))}
-          </aside>
-          {visibleProjects.length > 0 ? (
-            <div className="projects-grid">
-              {visibleProjects.map((project) => (
-                <article className="projects-card" key={project.slug}>
-                  <Link href={`/projectos/${project.slug}`}>
-                    <div className="projects-card-image">
-                      <Image
-                        unoptimized
-                        src={project.coverImage}
-                        alt={localized(project.title, locale)}
-                        width={1200}
-                        height={900}
-                      />
-                    </div>
-                    <div className="projects-card-caption">
-                      <span className="projects-card-type">
-                        {categoryName(project.category)}
-                      </span>
-                      <h2>{localized(project.title, locale)}</h2>
-                      <p>
-                        {project.location} · {project.year}
-                      </p>
-                    </div>
-                  </Link>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <p className="projects-empty">
-              {t.noProjects}
-            </p>
-          )}
-        </div>
-      </section>
-    </div>
-  );
-}
 export function AboutPage() {
   const { t } = useLocale();
   return (
@@ -1021,8 +931,8 @@ export function ProjectDetail({ slug }: { slug: string }) {
           </div>
         </div>
         <aside className="project-showcase-info">
-          <Link className="project-back" href="/projetos">
-            ← {t.allProjects}
+          <Link className="project-back" href="/">
+            ← {t.home}
           </Link>
           <SectionLabel>{cmsProjectCategories.find((category) => category.slug === project.category)?.name[locale] || translatedCategory(project.category, locale)}</SectionLabel>
           <h1>{localized(project.title, locale)}</h1>
