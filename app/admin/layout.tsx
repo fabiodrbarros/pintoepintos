@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Gestão de conteúdos — Pinto & Pintos',
+  title: 'Gestão de conteúdos',
   robots: { index: false, follow: false },
 };
 

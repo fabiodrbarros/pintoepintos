@@ -4,10 +4,32 @@ import './globals.css';
 import { SiteShell } from '@/components/site-shell';
 import { LocaleProvider } from '@/components/locale';
 import type { Locale } from '@/lib/cms-types';
+import { homeTitle, siteName, siteUrl } from '@/lib/site-metadata';
+
+const description =
+  'Projetamos, fabricamos e instalamos soluções de carpintaria à medida.';
+
 export const metadata: Metadata = {
-  title: 'Pinto & Pintos — Carpintaria à medida',
-  description:
-    'Projetamos, fabricamos e instalamos soluções de carpintaria à medida.',
+  metadataBase: siteUrl,
+  title: {
+    default: homeTitle,
+    template: `%s | ${siteName}`,
+  },
+  description,
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: homeTitle,
+    description,
+    url: '/',
+    siteName,
+    locale: 'pt_PT',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: homeTitle,
+    description,
+  },
 };
 export default async function RootLayout({
   children,

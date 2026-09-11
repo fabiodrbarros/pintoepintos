@@ -1,9 +1,12 @@
-import type { Metadata } from 'next';
 import { AboutStudioPage } from '@/components/about-studio';
+import { pageMetadata } from '@/lib/site-metadata';
 
-export const metadata: Metadata = {
-  title: 'A Carpintaria — Studio | Pinto & Pintos',
-  description: 'Protótipo experimental da história da Carpintaria Pinto & Pintos.',
+export const metadata = {
+  ...pageMetadata(
+    'A Carpintaria — Studio',
+    'Protótipo experimental da história da Carpintaria Pinto & Pintos.',
+    '/sobre-studio',
+  ),
   robots: { index: false, follow: false },
 };
 
