@@ -35,10 +35,10 @@ const nav = [
   ['/contactos', 'Contactos', 3],
 ] as const;
 const catalogFallback: CmsItem[] = catalogItems.map((item, index) => ({
-  id: item.id, kind: 'catalog', slug: item.id, category: item.id,
-  title: { pt: item.title, en: '', fr: '' }, description: { pt: '', en: '', fr: '' },
-  materials: { pt: '', en: '', fr: '' }, coverImage: item.image, images: [item.image],
-  client: '', location: '', year: '', sortOrder: index, published: true,
+  id: item.id, kind: 'catalog', slug: item.slug, category: item.category,
+  title: { pt: item.title, en: '', fr: '' }, description: { pt: item.description, en: '', fr: '' },
+  materials: { pt: item.materials, en: '', fr: '' }, coverImage: item.image, images: [item.image],
+  client: '', location: '', year: item.year, sortOrder: item.sortOrder ?? index, published: true,
 }));
 const projectFallback: CmsItem[] = projects.map((project, index) => ({
   id: project.slug, kind: 'project', slug: project.slug, category: project.category === 'Moradia' ? 'moradia' : 'espaco-comercial',

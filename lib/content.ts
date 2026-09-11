@@ -1,3 +1,5 @@
+import { catalog2026 } from '@/db/seeds/catalog-2026.mjs';
+
 export const company = {
   email: 'carpintaria.pintos@sapo.pt',
   phone: '258 518 100',
@@ -7,27 +9,7 @@ export const company = {
 };
 // Inserir apenas estatísticas confirmadas e o caminho do logótipo original.
 export const stats: { value: string; label: string }[] = [];
-export const catalogItems = [
-  { id: 'cozinhas', title: 'Cozinhas', image: '/catalogo/cozinhas.jpg' },
-  { id: 'roupeiros', title: 'Roupeiros', image: '/catalogo/roupeiros.jpg' },
-  {
-    id: 'portas-janelas',
-    title: 'Portas e Janelas',
-    image: '/catalogo/portas-janelas.jpg',
-  },
-  { id: 'moveis', title: 'Móveis', image: '/catalogo/moveis.jpg' },
-  {
-    id: 'pavimentos',
-    title: 'Pavimentos',
-    image: '/catalogo/pavimentos.png',
-    icon: true,
-  },
-  {
-    id: 'tetos-revestimentos',
-    title: 'Tetos e Revestimentos',
-    image: '/catalogo/tetos-revestimentos.jpg',
-  },
-];
+export const catalogItems = catalog2026.items;
 export const projects = [
   {
     slug: 'moradia-vilafonche',

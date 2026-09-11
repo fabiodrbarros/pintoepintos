@@ -9,6 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:sites": "vinext build",
+    "migrate:catalog-2026": "node scripts/migrate-catalog-2026.mjs",
     "start": "next start",
     "lint": "oxlint",
     "format": "oxfmt"

@@ -43,6 +43,10 @@ docker compose down
 git pull --ff-only
 docker compose up -d --build --remove-orphans
 
+# A migração do catálogo é aplicada automaticamente no primeiro acesso.
+# Para a executar/verificar explicitamente:
+docker compose exec website node scripts/migrate-catalog-2026.mjs
+
 # Verificar a saúde da aplicação
 curl --fail http://127.0.0.1:${PORT:-3000}/api/health
 ```
@@ -67,6 +71,6 @@ O script `build` usa o servidor Next.js, necessário para SQLite, autenticação
 
 ## Conteúdo e formulário
 
-O conteúdo inicial e os contactos ficam em `lib/content.ts`; o conteúdo gerido no painel é guardado em SQLite. O formulário público valida os campos obrigatórios e prepara uma mensagem `mailto:` para `carpintaria.pintos@sapo.pt`; o visitante conclui o envio no seu programa de email e o servidor não guarda dados pessoais do formulário.
+O conteúdo inicial e os contactos ficam em ficheiros versionados; o conteúdo gerido no painel é guardado em SQLite. As migrações acrescentam apenas registos em falta e preservam conteúdo alterado no painel. O formulário público valida os campos obrigatórios e prepara uma mensagem `mailto:` para `carpintaria.pintos@sapo.pt`; o visitante conclui o envio no seu programa de email e o servidor não guarda dados pessoais do formulário.
 
 Todas as imagens, fontes e outros recursos necessários ao site estão versionados em `public/` ou junto dos respetivos componentes.

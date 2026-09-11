@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { catalogItems, projects } from '@/lib/content';
 import type { CmsCategory, CmsItem, ContentKind } from '@/lib/cms-types';
 import { categoriesFor } from '@/lib/categories';
+import { migrateCatalog2026 } from '@/db/migrations/catalog-2026.mjs';
 
 const databasePath = process.env.DATABASE_PATH || './data/site.db';
 function openDatabase(path: string): Database.Database {
@@ -59,6 +60,10 @@ function initialize(db: Database.Database) {
       UNIQUE(kind, slug)
     );
     CREATE INDEX IF NOT EXISTS idx_categories_kind_order ON categories(kind, sort_order);
+    CREATE TABLE IF NOT EXISTS schema_migrations (
+      id TEXT PRIMARY KEY,
+      applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
   const categoryTotal = db.prepare('SELECT COUNT(*) AS total FROM categories').get() as { total: number };
@@ -71,6 +76,7 @@ function initialize(db: Database.Database) {
     UPDATE content_items SET category = 'moradia' WHERE kind = 'project' AND lower(category) = 'moradia';
     UPDATE content_items SET category = 'espaco-comercial' WHERE kind = 'project' AND lower(category) IN ('espaço comercial', 'espaco comercial');
   `);
+  migrateCatalog2026(db);
 }
 
 function seedCategories(db: Database.Database) {
@@ -98,21 +104,21 @@ function seed(db: Database.Database) {
   `);
 
   const transaction = db.transaction(() => {
-    catalogItems.forEach((item, index) =>
+    catalogItems.forEach((item) =>
       insert.run({
-        id: randomUUID(),
+        id: item.id,
         kind: 'catalog',
-        slug: item.id,
-        category: item.id,
+        slug: item.slug,
+        category: item.category,
         titlePt: item.title,
-        descriptionPt: '',
-        materialsPt: '',
+        descriptionPt: item.description,
+        materialsPt: item.materials,
         coverImage: item.image,
         imagesJson: JSON.stringify([item.image]),
         client: '',
         location: '',
-        year: '',
-        sortOrder: index,
+        year: item.year,
+        sortOrder: item.sortOrder,
       }),
     );
     projects.forEach((project, index) =>
