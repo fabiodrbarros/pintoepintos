@@ -132,9 +132,13 @@ export default function StudioPanels({
       const finalX = portrait ? width * 0.28 : -width * 0.2;
       const descendedY = portrait ? height * 0.2 : height * 0.17;
       const finalY = portrait ? -height * 0.2 : 0;
+      const shortViewportClearance = Math.min(
+        180,
+        64 + Math.max(0, 800 - height) * 0.75,
+      );
       const introClearance =
         portrait && studioMode
-          ? Math.min(64, height * 0.075) * (1 - descend)
+          ? shortViewportClearance * (1 - descend)
           : 0;
       const view = {
         scale: base.scale * scaleFactor,

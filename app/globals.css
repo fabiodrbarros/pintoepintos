@@ -4726,13 +4726,4 @@ select.site-language:focus-visible {
   .studio-quality-stage {
     bottom: clamp(54px, 7svh, 70px);
   }
-
-  .catalog-fullscreen-main {
-    height: 100svh;
-    overflow: hidden;
-  }
-
-  .catalog-fullscreen-main + .footer {
-    display: none;
-  }
 }

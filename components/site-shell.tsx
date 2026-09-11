@@ -16,12 +16,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         {t.skipToContent}
       </a>
       <Header />
-      <main
-        id="main"
-        className={pathname === '/catalogo' ? 'catalog-fullscreen-main' : undefined}
-      >
-        {children}
-      </main>
+      <main id="main">{children}</main>
       <Footer />
     </>
   );
