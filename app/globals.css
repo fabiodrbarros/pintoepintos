@@ -4743,14 +4743,7 @@ select.site-language:focus-visible {
 }
 
 body:has(.not-found-page) .header {
-  position: fixed;
-  z-index: 40;
-  inset: 0 0 auto;
-  margin: 0;
-  padding-inline: var(--space);
-  background: rgba(246, 244, 239, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  display: none;
 }
 
 .not-found-page::after {
