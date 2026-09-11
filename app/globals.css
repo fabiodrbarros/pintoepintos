@@ -4715,11 +4715,20 @@ select.site-language:focus-visible {
 
 @media (max-width: 767px) {
   .contact-art {
-    margin-top: -72px;
+    margin-top: -132px;
     margin-bottom: -64px;
   }
 
   .studio-quality-stage {
     bottom: clamp(54px, 7svh, 70px);
+  }
+
+  .catalog-fullscreen-main {
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .catalog-fullscreen-main + .footer {
+    display: none;
   }
 }

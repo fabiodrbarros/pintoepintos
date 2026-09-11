@@ -111,6 +111,7 @@ export default function StudioPanels({
       const width = root.clientWidth;
       const height = root.clientHeight;
       const contactMode = mode === 'contact';
+      const studioMode = mode === 'studio';
       const portrait = width < 760 && height > width;
       const targetProgress = clamp(progress.current);
       displayedProgress = reducedMotion.matches
@@ -131,10 +132,18 @@ export default function StudioPanels({
       const finalX = portrait ? width * 0.28 : -width * 0.2;
       const descendedY = portrait ? height * 0.2 : height * 0.17;
       const finalY = portrait ? -height * 0.2 : 0;
+      const introClearance =
+        portrait && studioMode
+          ? Math.min(64, height * 0.075) * (1 - descend)
+          : 0;
       const view = {
         scale: base.scale * scaleFactor,
         x: base.x + startX + (finalX - startX) * moveLeft,
-        y: base.y + descendedY * descend + (finalY - descendedY) * moveLeft,
+        y:
+          base.y +
+          descendedY * descend +
+          (finalY - descendedY) * moveLeft +
+          introClearance,
       };
 
       bodies.forEach((body, index) => {
