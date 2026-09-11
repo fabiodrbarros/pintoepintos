@@ -44,7 +44,7 @@
 .pinto-flow .pinto-hero-actions a:hover { color:var(--oak); transform:translateY(-2px); }
 .pinto-flow .pinto-hero-actions svg { width:15px; height:15px; }
 .pinto-flow .pinto-hero-contact { gap:24px; margin-left:5px; white-space:nowrap; }
-.pinto-flow .pinto-hero-contact span { font-size:16px; line-height:1; }
+.pinto-flow .pinto-hero-contact svg { width:16px; height:16px; stroke-width:1.35; }
 .pinto-flow .copy-form { top:18%; left:61%; width:37%; opacity:0; }
 .pinto-flow .copy.copy-form h2 { font-size:clamp(25px,2.35vw,48px); line-height:1.12; font-weight:400; letter-spacing:-.05em; text-transform:uppercase; }
 .pinto-flow .copy-form p { max-width:520px; }

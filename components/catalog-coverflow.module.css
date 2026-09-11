@@ -1,6 +1,8 @@
 .page {
   --ink: #29221d;
   min-height: 100svh;
+  max-width: 100%;
+  overflow-x: hidden;
   overflow: clip;
   color: var(--ink);
   background: #f3efe8;
@@ -252,12 +254,13 @@
 
   .carouselViewport {
     inset: 110px 0 112px;
+    padding-inline: 14px;
   }
 
   .carouselMount {
-    width: min(86vw, calc(181.818svh - 429.091px));
-    min-width: 520px;
-    transform: translateX(-1.5%);
+    width: min(100%, 430px);
+    min-width: 0;
+    transform: none;
   }
 
   .filterBlock {
@@ -266,14 +269,17 @@
   }
 
   .filters {
-    height: auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    overflow: visible;
+    height: 64px;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .filters > button {
-    min-width: 0;
+    flex: 0 0 clamp(132px, 40vw, 172px);
+    min-width: 132px;
     padding-inline: 12px;
   }
 

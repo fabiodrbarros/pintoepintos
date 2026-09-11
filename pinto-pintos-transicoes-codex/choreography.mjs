@@ -192,11 +192,12 @@ export function viewport(width,height,progress){
     const catalog=segment(progress,.455,.615)*(1-segment(progress,.815,.97));
     const shelfCenter=shelfPhotography.x+shelfPhotography.width*shelfPhotography.scale/2;
     let focus=mix(1010,620,move);focus=mix(focus,570,open);focus=mix(focus,943.5,catalog);focus=mix(focus,shelfCenter,shelf);
-    const scale=mix(width/1160,width/760,catalog);
+    const family=segment(early,.10,.30)*(1-segment(progress,.40,.54));
+    const scale=mix(width/1160,width/760,catalog)*mix(1,.9,family);
     // On a narrow portrait view, let the family copy finish before the opened
     // wood mark enters the same vertical space. Fade this offset before the
     // catalogue chapter takes over.
-    const familyClearance=112*segment(early,.10,.30)*(1-segment(progress,.40,.54));
+    const familyClearance=148*family;
     return {scale,x:width*.5-focus*scale,y:mix(height*.64-450*scale,height*.60-524*scale,catalog)+familyClearance};
   }
   const scale=Math.min(width/design.width,height/design.height);

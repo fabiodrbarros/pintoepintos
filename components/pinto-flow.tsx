@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type CSSProperties } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { useLocale } from '@/components/locale';
 import { mountPintoFlow } from '@/pinto-pintos-transicoes-codex/pinto-flow.mjs';
 
@@ -115,7 +116,7 @@ export function PintoFlow() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" /></svg>
             </a>
             <i aria-hidden="true" />
-            <a className="pinto-hero-contact" href="/contactos">{t.contact} <span aria-hidden="true">↗</span></a>
+            <a className="pinto-hero-contact" href="/contactos">{t.contact} <ArrowUpRight aria-hidden="true" /></a>
           </div>
         </div>
 

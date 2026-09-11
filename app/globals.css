@@ -4707,3 +4707,19 @@ select.site-language:focus-visible {
   }
   .catalog-layout .catalog-sidebar-filters button.is-active { border-bottom-color: var(--text); }
 }
+
+/* Mobile composition corrections: keep the approved desktop untouched. */
+.header-editorial .menu-trigger {
+  color: #28251f;
+}
+
+@media (max-width: 767px) {
+  .contact-art {
+    margin-top: -72px;
+    margin-bottom: -64px;
+  }
+
+  .studio-quality-stage {
+    bottom: clamp(54px, 7svh, 70px);
+  }
+}

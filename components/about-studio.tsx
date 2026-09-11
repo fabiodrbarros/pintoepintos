@@ -40,7 +40,7 @@ export function AboutStudioPage() {
         .to({}, { duration: 0.92 })
         .to(history.current, { autoAlpha: 0, y: -34, duration: 0.72 }, 3.12)
         .to(state, { progress: 1, duration: 1.18, onUpdate: () => { progress.current = state.progress; } }, 3.28)
-        .to(canvas.current, { clipPath: mobile ? 'inset(0 0 72% 0)' : 'inset(0 0 0% 0)', duration: 0.72 }, 3.28)
+        .to(canvas.current, { clipPath: mobile ? 'inset(0 0 50% 0)' : 'inset(0 0 0% 0)', duration: 0.72 }, 3.28)
         .fromTo(quality.current, { autoAlpha: 0, x: 70 }, { autoAlpha: 1, x: 0, duration: 0.88 }, 3.88)
         .to({}, { duration: 0.85 });
       return () => timeline.kill();

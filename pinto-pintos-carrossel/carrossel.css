@@ -325,10 +325,12 @@
 
 @media (max-width: 700px) and (orientation: portrait) {
   .pp-carousel .pp-previous {
-    right: calc(100% - var(--carousel-start) + 1vw);
+    right: auto;
+    left: 0;
   }
   .pp-carousel .pp-next {
-    left: calc(100% + 1vw);
+    right: 0;
+    left: auto;
   }
   .pp-carousel .pp-arrow {
     width: 28px;

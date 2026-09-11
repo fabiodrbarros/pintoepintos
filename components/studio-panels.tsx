@@ -121,14 +121,14 @@ export default function StudioPanels({
       const moveLeft = segment(displayedProgress, 0.52, 1);
       const base = viewport(width, height, 0);
       const startScale = portrait ? 0.72 : 0.82;
-      const settledScale = portrait ? 0.43 : 0.76;
+      const settledScale = portrait ? 0.58 : 0.76;
       const scaleFactor =
         (startScale +
           (settledScale - startScale) * moveLeft -
           0.06 * descend * (1 - moveLeft)) *
         (contactMode ? 1.26 : 1);
       const startX = contactMode || portrait ? 0 : width * 0.23;
-      const finalX = portrait ? -width * 0.18 : -width * 0.2;
+      const finalX = portrait ? width * 0.28 : -width * 0.2;
       const descendedY = portrait ? height * 0.2 : height * 0.17;
       const finalY = portrait ? -height * 0.2 : 0;
       const view = {
