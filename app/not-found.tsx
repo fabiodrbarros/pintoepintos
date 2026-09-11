@@ -1,20 +1,28 @@
-'use client';
+import type { Metadata } from 'next';
+import { NotFoundPage } from '@/components/not-found-page';
+import { siteName } from '@/lib/site-metadata';
 
-import Link from 'next/link';
-import { useLocale } from '@/components/locale';
+const title = `Página não encontrada | ${siteName}`;
+const description = 'A página que procura não existe ou foi movida.';
+
+export const metadata: Metadata = {
+  title: 'Página não encontrada',
+  description,
+  robots: { index: false, follow: false },
+  openGraph: {
+    title,
+    description,
+    siteName,
+    locale: 'pt_PT',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title,
+    description,
+  },
+};
+
 export default function NotFound() {
-  const { t } = useLocale();
-  return (
-    <section className="section page-intro">
-      <p>404</p>
-      <h1>
-        {t.notFoundTitle1}
-        <br />
-        {t.notFoundTitle2}
-      </h1>
-      <Link href="/" className="text-link">
-        {t.backHome} →
-      </Link>
-    </section>
-  );
+  return <NotFoundPage />;
 }

@@ -4727,3 +4727,215 @@ select.site-language:focus-visible {
     bottom: clamp(54px, 7svh, 70px);
   }
 }
+
+/* Página 404 — composição editorial com a linguagem material do site. */
+.not-found-page {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.82fr) minmax(500px, 1.18fr);
+  align-items: center;
+  gap: clamp(40px, 7vw, 120px);
+  padding: clamp(130px, 15vh, 170px) var(--space) clamp(76px, 10vh, 110px);
+  overflow: hidden;
+  isolation: isolate;
+  background: #f6f4ef var(--site-environment-image) center / cover no-repeat;
+}
+
+.not-found-page::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(246, 244, 239, 0.12), transparent 58%);
+}
+
+.not-found-copy {
+  position: relative;
+  z-index: 3;
+  align-self: center;
+  max-width: 660px;
+  animation: not-found-copy-in 0.8s 0.08s both cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.not-found-code {
+  display: block;
+  margin-bottom: clamp(30px, 5vh, 54px);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.28em;
+}
+
+.not-found-copy h1 {
+  margin: 0;
+  font-size: clamp(40px, 4.6vw, 76px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.not-found-copy h1 span {
+  display: block;
+  color: #8f6847;
+}
+
+.not-found-copy > i {
+  display: block;
+  width: 52px;
+  height: 1px;
+  margin: clamp(28px, 4vh, 42px) 0;
+  background: #716252;
+}
+
+.not-found-return {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #aaa393;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.not-found-return svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.4;
+  transition: transform 0.25s ease;
+}
+
+.not-found-return:hover {
+  color: #8f6847;
+}
+
+.not-found-return:hover svg {
+  transform: translateX(-4px);
+}
+
+.not-found-art {
+  position: relative;
+  z-index: 2;
+  height: min(68vh, 650px);
+  min-height: 440px;
+  animation: not-found-art-in 1s 0.12s both cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.not-found-art .studio-object {
+  position: relative;
+  inset: auto;
+  width: 118%;
+  height: 100%;
+  margin-left: -12%;
+  overflow: visible;
+}
+
+.not-found-signature {
+  position: absolute;
+  z-index: 3;
+  right: var(--space);
+  bottom: 28px;
+  left: var(--space);
+  display: flex;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid rgba(83, 70, 59, 0.22);
+  color: #6f665c;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@keyframes not-found-copy-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes not-found-art-in {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 767px) {
+  .not-found-page {
+    min-height: max(620px, 100dvh);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 112px 24px 68px;
+    background-position: 38% center;
+  }
+
+  .not-found-copy {
+    max-width: none;
+  }
+
+  .not-found-code {
+    margin-bottom: 28px;
+  }
+
+  .not-found-copy h1 {
+    font-size: clamp(37px, 11vw, 49px);
+  }
+
+  .not-found-copy > i {
+    width: 36px;
+    margin: 22px 0;
+  }
+
+  .not-found-art {
+    height: clamp(250px, 39dvh, 360px);
+    min-height: 0;
+    margin: -12px -24px 0;
+  }
+
+  .not-found-art .studio-object {
+    width: 128%;
+    margin-left: -14%;
+  }
+
+  .not-found-signature {
+    right: 24px;
+    bottom: 20px;
+    left: 24px;
+  }
+}
+
+@media (max-width: 767px) and (max-height: 700px) {
+  .not-found-page {
+    padding-top: 90px;
+    padding-bottom: 48px;
+  }
+
+  .not-found-code {
+    margin-bottom: 18px;
+  }
+
+  .not-found-copy h1 {
+    font-size: clamp(35px, 10.3vw, 42px);
+  }
+
+  .not-found-copy > i {
+    margin: 14px 0;
+  }
+
+  .not-found-art {
+    height: 200px;
+    margin-top: -4px;
+  }
+
+  .not-found-signature {
+    bottom: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .not-found-copy,
+  .not-found-art {
+    animation: none;
+  }
+}
