@@ -19,7 +19,12 @@ export async function GET(
   }
   try {
     const uploadDirectory = process.env.UPLOAD_DIR || './data/uploads';
-    const data = await readFile(join(uploadDirectory, filename));
+    const data = await readFile(
+      /* turbopackIgnore: true */ join(
+        /* turbopackIgnore: true */ uploadDirectory,
+        filename,
+      ),
+    );
     return new NextResponse(data, {
       headers: {
         'Content-Type': contentTypes[extname(filename).toLowerCase()] || 'application/octet-stream',

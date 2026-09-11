@@ -110,7 +110,7 @@ export function MobileMenu({ editorial = false }: { editorial?: boolean }) {
             </SheetClose>
           </div>
 
-          <nav className="pp-menu-nav" aria-label="Menu principal">
+          <nav className="pp-menu-nav" aria-label={t.mainNavigation}>
             <ul className="pp-menu-list">
               {[['/', t.home] as const, ...translatedNav].map(([url, label]) => (
                 <li className="pp-menu-item" key={url}>
@@ -140,6 +140,14 @@ export function MobileMenu({ editorial = false }: { editorial?: boolean }) {
               <dd><a href={`mailto:${company.email}`}>{company.email}</a></dd>
             </div>
           </dl>
+          <div className="pp-menu-socials" aria-label={t.socialNetworks}>
+            <a href="https://www.facebook.com/profile.php?id=61578810787879" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 21v-8h3l.5-3H14V8c0-.9.3-1.5 1.6-1.5H18V3.2c-.4-.1-1.8-.2-3-.2-3 0-5 1.8-5 5v2H7v3h3v8z" /></svg>
+            </a>
+            <a href="https://www.instagram.com/carpintariapintos/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" /></svg>
+            </a>
+          </div>
 
           <div className="pp-menu-bottom">
             <Link
@@ -214,9 +222,23 @@ export function Footer() {
           </Link>
           <p>{t.siteTagline}</p>
           <span>{t.quality}</span>
+          <a
+            className="footer-funding"
+            href="/cartaz-cpp.pdf"
+            download="Cartaz_CPPv2-1.pdf"
+            aria-label={t.fundingDownload}
+          >
+            <Image
+              src="/financiamento-prr.png"
+              alt={t.fundingLogosAlt}
+              width={1040}
+              height={203}
+              unoptimized
+            />
+          </a>
         </div>
 
-        <nav className="footer-navigation" aria-label="Explorar o site">
+        <nav className="footer-navigation" aria-label={t.explore}>
           <strong>{t.explore}</strong>
           {nav.map(([url, , translationIndex]) => (
             <Link key={url} href={url}>
@@ -334,6 +356,7 @@ export function WoodPanels({
   navigation?: boolean;
 }) {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
   const [rotation, setRotation] = useState({ rotateX: 0, rotateY: 0 });
   return (
     <motion.div
@@ -360,7 +383,7 @@ export function WoodPanels({
         height="1024"
       />
       {navigation && (
-        <nav className="panel-navigation" aria-label="Explorar a carpintaria">
+        <nav className="panel-navigation" aria-label={t.workshop}>
           {nav.slice(0, 3).map(([url, label], i) => (
             <Link
               className={`panel-link panel-link-${i + 1}`}
@@ -497,17 +520,18 @@ export function Home() {
   return <PintoFlow />;
 }
 export function CallToAction() {
+  const { t } = useLocale();
   return (
     <section className="cta section">
-      <SectionLabel>Começa com uma ideia</SectionLabel>
+      <SectionLabel>{t.startWithIdea}</SectionLabel>
       <div>
         <h2>
-          Vamos dar forma
+          {t.contact1}
           <br />
-          ao seu próximo projeto.
+          {t.contact2}
         </h2>
         <Link className="button" href="/contactos">
-          Fale connosco <ArrowUpRight size={18} />
+          {t.contact} <ArrowUpRight size={18} />
         </Link>
       </div>
     </section>
@@ -561,18 +585,18 @@ export function CatalogPage() {
           <AboutHeroLogo />
           <p className="about-opening-aside">
             <span />
-            Da ideia
+            {t.fromIdeaToSpace.split(' ')[0]} {t.fromIdeaToSpace.split(' ')[1]}
             <br />
-            ao espaço
+            {t.fromIdeaToSpace.split(' ').slice(2).join(' ')}
             <i />
           </p>
         </div>
       </section>
-      <section id="catalogo-resultados" className="catalog-browser" aria-label="Catálogo de soluções">
+      <section id="catalogo-resultados" className="catalog-browser" aria-label={t.catalogSolutions}>
         <div className="catalog-layout">
           <aside
             className="projects-filters catalog-sidebar-filters"
-            aria-label="Filtrar catálogo"
+            aria-label={t.filterCatalog}
           >
             <SectionLabel>{t.filter}</SectionLabel>
             <button
@@ -650,14 +674,29 @@ export function CatalogPage() {
             >
               <X aria-hidden="true" />
             </button>
-            <Image
-              src={selectedItem.coverImage}
-              alt={localized(selectedItem.title, locale)}
-              width={1200}
-              height={900}
-              unoptimized
-            />
-            <p>{localized(selectedItem.title, locale)}</p>
+            <div className="catalog-lightbox-media">
+              <Image
+                src={selectedItem.coverImage}
+                alt={localized(selectedItem.title, locale)}
+                width={1200}
+                height={900}
+                unoptimized
+              />
+            </div>
+            <div className="catalog-lightbox-copy">
+              <h2>{localized(selectedItem.title, locale)}</h2>
+              <dl>
+                <div>
+                  <dt>{t.year}</dt>
+                  <dd>{selectedItem.year}</dd>
+                </div>
+                <div>
+                  <dt>{t.materials}</dt>
+                  <dd>{localized(selectedItem.materials, locale)}</dd>
+                </div>
+              </dl>
+              <p>{localized(selectedItem.description, locale)}</p>
+            </div>
           </div>
         </div>
       )}
@@ -686,9 +725,9 @@ export function AboutPage() {
           <WoodPanels perspective={0.25} interactive={false} />
           <p className="about-opening-aside">
             <span />
-            Da natureza
+            {t.natureToSpaces.split(' ').slice(0, 2).join(' ')}
             <br />
-            aos seus espaços
+            {t.natureToSpaces.split(' ').slice(2).join(' ')}
             <i />
           </p>
         </div>
@@ -697,9 +736,9 @@ export function AboutPage() {
         <figure className="about-detail-photo">
           <ImageReveal
             src="/carpintaria-oficina.jpg"
-            alt="Área de produção da Carpintaria Pinto & Pintos em Prozelo"
+            alt={t.workshopAlt}
           />
-          <figcaption>A nossa oficina, onde cada projeto ganha forma.</figcaption>
+          <figcaption>{t.workshopCaption}</figcaption>
         </figure>
         <Reveal className="about-history-copy">
           <SectionLabel>{t.ourHistory}</SectionLabel>
@@ -709,8 +748,7 @@ export function AboutPage() {
               {t.story2}
             </span>
           </h2>
-          <p>{t.historyP1}</p>
-          <p>{t.historyP2}</p>
+          <p>{t.historyP1} {t.historyP2}</p>
         </Reveal>
       </section>
       <section className="about-quality">
@@ -723,7 +761,7 @@ export function AboutPage() {
           </h2>
           <div className="about-quality-body">
             <p>{t.qualityP}</p>
-            <div className="about-stages" aria-label="Etapas do nosso trabalho">
+            <div className="about-stages" aria-label={t.workStages}>
               <div>
                 <Ruler aria-hidden="true" />
                 <span>01</span>
@@ -759,10 +797,10 @@ export function ContactForm() {
           const value = data.get(key);
           return typeof value === 'string' ? value : '';
         };
-        const body = `Nome: ${field('name')}\nEmail: ${field('email')}\nTelefone: ${field('phone')}\nAssunto: ${field('subject')}\n\n${field('message')}`;
+        const body = `${t.name}: ${field('name')}\n${t.email}: ${field('email')}\n${t.phone}: ${field('phone')}\n${t.subject}: ${field('subject')}\n\n${field('message')}`;
         window.location.href = `mailto:${company.email}?subject=${encodeURIComponent('Pedido de projeto — ' + field('name'))}&body=${encodeURIComponent(body)}`;
         setStatus(
-          'O pedido foi preparado no seu programa de email. Conclua o envio nessa aplicação.',
+          t.emailPrepared,
         );
       }}
     >
@@ -777,13 +815,13 @@ export function ContactForm() {
           />
         </label>
         <label>
-          <span className="sr-only">Email *</span>
+          <span className="sr-only">{t.email} *</span>
           <input
             autoComplete="email"
             name="email"
             type="email"
             required
-            placeholder="Email *"
+            placeholder={`${t.email} *`}
           />
         </label>
         <label>
@@ -818,7 +856,7 @@ export function ContactForm() {
       <button className="button" type="submit">
         {t.prepare} <ArrowUpRight size={18} />
       </button>
-      <p className="form-note">Conclua o envio no seu programa de email.</p>
+      <p className="form-note">{t.emailNote}</p>
       <output className="form-status">{status}</output>
     </form>
   );
@@ -846,7 +884,7 @@ export function ContactPage() {
           title={
             <>
               <span className="contact-title-line">{t.contact1}</span>
-              <span className="contact-title-line">
+              <span className="contact-title-line contact-title-accent">
                 {t.contact2}
               </span>
             </>
@@ -911,14 +949,14 @@ export function ProjectDetail({ slug }: { slug: string }) {
               unoptimized
             />
           </div>
-          <div className="project-thumbnails" aria-label="Fotografias do projeto">
+          <div className="project-thumbnails" aria-label={t.projectPhotos}>
             {project.images.map((image, index) => (
               <button
                 type="button"
                 key={image}
                 className={activeImage === image ? 'is-active' : ''}
                 aria-pressed={activeImage === image}
-                aria-label={`Ver fotografia ${index + 1}`}
+                aria-label={`${t.viewPhoto} ${index + 1}`}
                 onClick={() => setSelectedImage(image)}
               >
                 <Image

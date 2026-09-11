@@ -14,7 +14,7 @@ export const earlyProgress=progress=>clamp(progress/.75);
 export const shelfProgress=progress=>mix(.625,1,clamp((progress-.815)/.185));
 export const catalogVisibility=progress=>segment(progress,.535,.605)*(1-segment(progress,.755,.805));
 export const catalogIsInteractive=progress=>progress>=.615&&progress<=.755;
-export const catalogCardSize=portrait=>portrait?{width:200,height:320}:{width:220,height:420};
+export const catalogCardSize=portrait=>portrait?{width:180,height:288}:{width:180,height:350};
 
 // Bring the faces together while retaining the brand's continuous diagonals.
 export const logoOutline=[
@@ -72,27 +72,16 @@ const opened=fanFaces.flatMap(face=>split(poseFromFace(face,.045),2));
 // panels wrap into two rows so the engraved names remain readable.
 function catalogFace(index,portrait){
   const {width,height}=catalogCardSize(portrait);
-  const x=portrait?609.5+(index%3)*234:208.5+index*250;
-  const y=portrait?180+Math.floor(index/3)*368:270;
+  const x=portrait?640+(index%3)*210:340+index*210;
+  const y=portrait?225+Math.floor(index/3)*326:410;
   return [[x,y],[x+width,y],[x+width,y+height],[x,y+height]];
 }
-function catalogPerspectivePose(index,portrait){
+function catalogFlatPose(index,portrait){
   const face=catalogFace(index,portrait);
-  const base=poseFromFace(face,portrait?.12:.17);
-  const yaw=portrait?-.40:-.60,co=Math.cos(yaw),si=Math.sin(yaw);
-  // Turn the actual solid, keeping the two projected vertical edges inside
-  // its existing slot. The visible side grain occupies the remaining gap.
-  const left=(face[0][0]+7-camera.x)/camera.focal;
-  const right=(face[1][0]-15-camera.x)/camera.focal;
-  const z=base.center[2];
-  const width=(right-left)*z/(co-si*(right+left)/2);
-  const halfDepth=si*width/2;
-  const x=left*(z-halfDepth)+co*width/2;
-  const y=base.center[1]*(1-halfDepth*halfDepth/(z*z));
-  return {...base,center:[x,y,z],width,yaw};
+  return poseFromFace(face,.045);
 }
 const catalogWholePoses=[false,true].map(portrait=>
-  Array.from({length:6},(_,index)=>catalogPerspectivePose(index,portrait)));
+  Array.from({length:6},(_,index)=>catalogFlatPose(index,portrait)));
 const catalogPoses=catalogWholePoses.map(poses=>poses.flatMap(pose=>split(pose,2)));
 const expandedCatalogPoses=catalogPoses.map(poses=>poses.map(pose=>({
   ...pose,center:pose.center.map((value,index)=>index===2?value*.87:value),
@@ -101,9 +90,8 @@ const expandedCatalogPoses=catalogPoses.map(poses=>poses.map(pose=>({
 function catalogHoverPose(index,portrait,amount){
   const base=catalogWholePoses[portrait?1:0][Math.floor(index/2)];
   const z=base.center[2]-.42*amount,ratio=z/base.center[2];
-  const moved={...base,center:[base.center[0]*ratio,base.center[1]*ratio+.045*amount,z],yaw:base.yaw-.035*amount};
-  // Move and rotate the complete board before slicing it. Both halves and
-  // their continuous photographic grain must share the same pivot.
+  const moved={...base,center:[base.center[0]*ratio,base.center[1]*ratio+.045*amount,z]};
+  // Move the complete board forward while preserving its flat frontal face.
   return slicePose(moved,index%2,2);
 }
 
@@ -205,8 +193,15 @@ export function viewport(width,height,progress){
     const shelfCenter=shelfPhotography.x+shelfPhotography.width*shelfPhotography.scale/2;
     let focus=mix(1010,620,move);focus=mix(focus,570,open);focus=mix(focus,943.5,catalog);focus=mix(focus,shelfCenter,shelf);
     const scale=mix(width/1160,width/760,catalog);
-    return {scale,x:width*.5-focus*scale,y:mix(height*.64-450*scale,height*.60-524*scale,catalog)};
+    // On a narrow portrait view, let the family copy finish before the opened
+    // wood mark enters the same vertical space. Fade this offset before the
+    // catalogue chapter takes over.
+    const familyClearance=112*segment(early,.10,.30)*(1-segment(progress,.40,.54));
+    return {scale,x:width*.5-focus*scale,y:mix(height*.64-450*scale,height*.60-524*scale,catalog)+familyClearance};
   }
   const scale=Math.min(width/design.width,height/design.height);
-  return {scale,x:(width-design.width*scale)/2,y:(height-design.height*scale)/2};
+  // In the opening composition, give the mark more room from the copy on the
+  // left. The offset eases away before the later catalogue and shelf scenes.
+  const openingOffset=width*.072*(1-segment(progress,.16,.34));
+  return {scale,x:(width-design.width*scale)/2+openingOffset,y:(height-design.height*scale)/2};
 }

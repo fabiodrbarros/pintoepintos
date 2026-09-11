@@ -27,9 +27,9 @@ export class EngravedCatalog {
       link.href=item.href;link.tabIndex=-1;
       link.setAttribute('aria-label',item.name);
       link.setAttribute('aria-describedby',`${prefix}-${index}`);
-      const icon=document.createElement('span');icon.className='catalog-engraving';
+      const icon=document.createElement('img');icon.className='catalog-icon';
       icon.setAttribute('aria-hidden','true');
-      icon.style.setProperty('--catalog-icon',`url("${item.icon}")`);
+      icon.src=item.icon;icon.alt='';
       const label=document.createElement('span');label.className='catalog-name';
       label.setAttribute('aria-hidden','true');
       item.lines.forEach(line=>{

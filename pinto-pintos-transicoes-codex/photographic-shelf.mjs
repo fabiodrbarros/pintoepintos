@@ -5,6 +5,10 @@ let shelfInstance=0;
 const ns='http://www.w3.org/2000/svg';
 const polygon=points=>`polygon(${points.map(([x,y])=>`${x*100}% ${y*100}%`).join(',')})`;
 const bounds=points=>({left:Math.min(...points.map(p=>p[0])),top:Math.min(...points.map(p=>p[1])),width:Math.max(...points.map(p=>p[0]))-Math.min(...points.map(p=>p[0])),height:Math.max(...points.map(p=>p[1]))-Math.min(...points.map(p=>p[1]))});
+const svgMask=(config,shapes)=>{
+  const points=shapes.map(shape=>`<polygon points="${shape.map(([x,y])=>`${x},${y}`).join(' ')}"/>`).join('');
+  return `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${config.width}" height="${config.height}" viewBox="0 0 ${config.width} ${config.height}">${points}</svg>`)}")`;
+};
 
 export const sampleAtRest=(c,index)=>c.frames[index].map(([x,y])=>[c.x+x*c.scale,c.y+y*c.scale]);
 export function sampleInHand(config,index,amount,portrait){
@@ -46,6 +50,14 @@ export class PhotographicShelf {
     const outline=mask(`${prefix}-outline`,'nonzero');
     outline.setAttribute('d',this.maskPath([config.ledge,...config.items]));
     this.surface.style.clipPath=`url(#${prefix}-outline)`;
+    // Firefox can ignore an objectBoundingBox SVG clip path applied to HTML
+    // children. This alpha mask has the same shelf-and-panels silhouette and
+    // prevents the checkerboard embedded in the source photo from showing.
+    const surfaceMask=svgMask(config,[config.ledge,...config.items]);
+    this.surface.style.maskImage=surfaceMask;
+    this.surface.style.webkitMaskImage=surfaceMask;
+    this.surface.style.maskSize=this.surface.style.webkitMaskSize='100% 100%';
+    this.surface.style.maskRepeat=this.surface.style.webkitMaskRepeat='no-repeat';
     this.frameMask=mask(`${prefix}-frame`);
     this.gapMask=mask(`${prefix}-gap`);
     this.frameMask.setAttribute('d',this.inverseMask(config.items));

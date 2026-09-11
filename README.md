@@ -1,32 +1,72 @@
 # Carpintaria Pinto & Pintos
 
-Website em TypeScript, React, Tailwind CSS e Framer Motion, com rotas App Router compatíveis com Next.js através de Vinext (runtime Sites).
+Website da Carpintaria Pinto & Pintos, desenvolvido em TypeScript, React, Tailwind CSS, Framer Motion e Next.js App Router. Inclui catálogo, projetos, páginas institucionais, animações, tradução PT/EN/FR e um painel de administração em `/admin` para gerir conteúdos e imagens.
 
-## Desenvolvimento
+## Requisitos
 
-- `npm install`
-- `npm run dev`
-- `npm run build`
-- `npx tsc --noEmit`
-- `npx oxlint app components/site.tsx lib/content.ts`
+- Produção: Docker Engine com o plugin Docker Compose.
+- Desenvolvimento local: Node.js 22.13 ou superior e npm.
 
-## Conteúdo editável
+## Produção com Docker Compose
 
-`lib/content.ts` reúne contactos, serviços, estudos visuais e estatísticas. O array de estatísticas fica vazio até existirem valores confirmados. `company.logo` recebe o caminho do logótipo oficial em `public/`; enquanto estiver vazio, o cabeçalho apresenta apenas o nome em texto.
+Depois de clonar o repositório:
 
-As três imagens fornecidas são utilizadas como assets originais. O componente WoodPanels mantém a geometria intacta e permite tamanho, posição, perspetiva e interatividade configuráveis. As imagens de projetos estão claramente identificadas como estudos, não obras executadas.
+```bash
+cp .env.example .env
+```
 
-## Formulário
+Edite `.env` e defina uma palavra-passe forte em `ADMIN_PASSWORD` e uma chave aleatória com pelo menos 32 caracteres em `ADMIN_SESSION_SECRET`. Pode gerar a chave com:
 
-Valida os campos obrigatórios e prepara uma mensagem `mailto:` para carpintaria.pintos@sapo.pt. O visitante conclui o envio no seu programa de email. Não existe envio automático no servidor ou armazenamento de dados pessoais.
+```bash
+openssl rand -base64 48
+```
 
-## Pendências de conteúdo
+Construa e inicie os serviços:
 
-- Logótipo oficial.
-- Mockups das páginas desktop/mobile para comparação fiel de layout.
-- Fotografias e informações de obras reais.
-- História e estatísticas da empresa confirmadas.
+```bash
+docker compose up -d --build
+docker compose ps
+```
 
-## Verificação
+Por omissão, o site fica disponível em `http://127.0.0.1:3000`. Ajuste `BIND_ADDRESS` e `PORT` no `.env` quando necessário. O proxy reverso deve encaminhar pedidos para essa porta.
 
-Compilação e TypeScript verificados. Lint do código do website verificado. O lint global do starter inclui avisos/erros preexistentes nos componentes de catálogo não alterados.
+Comandos de operação:
+
+```bash
+# Consultar logs
+docker compose logs -f --tail=200 website
+
+# Parar os serviços
+docker compose down
+
+# Atualizar para a versão mais recente
+git pull --ff-only
+docker compose up -d --build --remove-orphans
+
+# Verificar a saúde da aplicação
+curl --fail http://127.0.0.1:${PORT:-3000}/api/health
+```
+
+O volume `pintos-data` preserva a base de dados SQLite e as imagens carregadas pelo painel entre reconstruções. O volume `libretranslate-models` preserva os modelos de tradução. `docker compose down` não elimina estes volumes; não use `docker compose down -v` sem uma cópia de segurança.
+
+## Cópia de segurança
+
+Pare temporariamente o serviço `website` e copie o conteúdo do volume `pintos-data`. Esse volume contém `site.db`, os respetivos ficheiros auxiliares SQLite e a pasta `uploads`.
+
+## Desenvolvimento e validação
+
+```bash
+npm ci
+npm run dev
+npm run build
+npx tsc --noEmit
+npm run lint
+```
+
+O script `build` usa o servidor Next.js, necessário para SQLite, autenticação, uploads e rotas API. O script `build:sites` mantém disponível a compilação Vinext usada pelo ambiente Sites.
+
+## Conteúdo e formulário
+
+O conteúdo inicial e os contactos ficam em `lib/content.ts`; o conteúdo gerido no painel é guardado em SQLite. O formulário público valida os campos obrigatórios e prepara uma mensagem `mailto:` para `carpintaria.pintos@sapo.pt`; o visitante conclui o envio no seu programa de email e o servidor não guarda dados pessoais do formulário.
+
+Todas as imagens, fontes e outros recursos necessários ao site estão versionados em `public/` ou junto dos respetivos componentes.

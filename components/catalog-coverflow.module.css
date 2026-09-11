@@ -24,8 +24,8 @@
   background:
     linear-gradient(
       180deg,
-      rgba(251, 249, 246, 0.08),
-      rgba(237, 226, 213, 0.12)
+      rgba(255, 252, 248, 0.52),
+      rgba(250, 239, 228, 0.38)
     ),
     url('/site-background.png') center / cover no-repeat;
 }
@@ -35,7 +35,7 @@
   position: absolute;
   z-index: 0;
   inset: 0;
-  opacity: 0.17;
+  opacity: 0.06;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
@@ -70,7 +70,7 @@
   width: 55vw;
   height: 85vh;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.58);
   filter: blur(80px);
   transform: translateX(-50%);
 }
@@ -80,7 +80,7 @@
   z-index: 18;
   top: clamp(96px, 12vh, 128px);
   left: clamp(24px, 5vw, 76px);
-  width: min(31vw, 465px);
+  width: min(42vw, 620px);
   color: var(--ink);
 }
 
@@ -91,6 +91,18 @@
   font-weight: 400;
   line-height: 1.04;
   letter-spacing: -0.055em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.eyebrow {
+  display: block;
+  margin: 0 0 18px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .catalogIntro h1 span {
@@ -198,6 +210,7 @@
   overflow: hidden;
   font-size: 0.72rem;
   line-height: 1.15;
+  text-transform: uppercase;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -225,7 +238,7 @@
   }
 
   .catalogIntro h1 {
-    font-size: clamp(1.65rem, 6vw, 2rem);
+    font-size: clamp(1.35rem, 5.5vw, 1.75rem);
   }
 
   .introRule {
@@ -253,13 +266,14 @@
   }
 
   .filters {
-    height: 62px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow: visible;
   }
 
   .filters > button {
-    flex: 0 0 132px;
+    min-width: 0;
     padding-inline: 12px;
   }
 

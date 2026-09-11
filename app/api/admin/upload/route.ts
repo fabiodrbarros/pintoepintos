@@ -29,6 +29,9 @@ export async function POST(request: Request) {
   await mkdir(uploadDirectory, { recursive: true });
   const extension = allowedTypes[file.type] || extname(file.name);
   const filename = `${randomUUID()}${extension}`;
-  await writeFile(join(uploadDirectory, filename), Buffer.from(await file.arrayBuffer()));
+  await writeFile(
+    join(/* turbopackIgnore: true */ uploadDirectory, filename),
+    Buffer.from(await file.arrayBuffer()),
+  );
   return NextResponse.json({ url: `/api/media/${filename}` });
 }

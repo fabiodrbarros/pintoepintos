@@ -13,6 +13,10 @@ export interface PintoCarouselController {
 export interface PintoCarouselOptions {
   imageUrl?: string;
   items?: PintoCarouselItem[];
+  labels?: {
+    year?: string;
+    materials?: string;
+  };
   onChange?: (index: number, item: PintoCarouselItem) => void;
 }
 

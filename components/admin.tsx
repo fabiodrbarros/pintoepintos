@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { ArrowLeft, Languages, LogOut, Plus, Save, Trash2, Upload, X } from 'lucide-react';
+import { useEffect, useState, type FormEvent } from 'react';
+import { ArrowLeft, Languages, LogOut, Pencil, Plus, Save, Trash2, Upload } from 'lucide-react';
 import type { CmsCategory, CmsItem, ContentKind, Locale } from '@/lib/cms-types';
 import { emptyLocalizedText } from '@/lib/cms-types';
 import { slugify } from '@/lib/slug';
@@ -18,6 +18,16 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+async function readJson<T>(response: Response): Promise<T | null> {
+  const body = await response.text();
+  if (!body.trim()) return null;
+  try {
+    return JSON.parse(body) as T;
+  } catch {
+    return null;
+  }
+}
 
 function blankItem(kind: ContentKind): CmsItem {
   return {
@@ -39,6 +49,7 @@ function blankItem(kind: ContentKind): CmsItem {
 }
 
 export function AdminLogin() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -53,11 +64,11 @@ export function AdminLogin() {
           const response = await fetch('/api/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password }),
+            body: JSON.stringify({ username, password }),
           });
-          const result = (await response.json()) as { error?: string };
+          const result = await readJson<{ error?: string }>(response);
           if (!response.ok) {
-            setError(result.error || 'Não foi possível iniciar sessão.');
+            setError(result?.error || 'Não foi possível iniciar sessão.');
             setLoading(false);
             return;
           }
@@ -73,6 +84,16 @@ export function AdminLogin() {
         />
         <span>Painel de gestão</span>
         <h1>Iniciar sessão</h1>
+        <label>
+          Utilizador
+          <input
+            type="text"
+            autoComplete="username"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            required
+          />
+        </label>
         <label>
           Palavra-passe
           <input
@@ -94,17 +115,20 @@ export function AdminLogin() {
 }
 
 export function AdminDashboard() {
-  const [kind, setKind] = useState<ContentKind>('project');
+  const kind: ContentKind = 'catalog';
   const [items, setItems] = useState<CmsItem[]>([]);
   const [categories, setCategories] = useState<CmsCategory[]>([]);
+  const [activeCategory, setActiveCategory] = useState('all');
   const [newCategory, setNewCategory] = useState('');
-  const [selected, setSelected] = useState<CmsItem>(blankItem('project'));
+  const [creatingCategory, setCreatingCategory] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [selected, setSelected] = useState<CmsItem>(blankItem('catalog'));
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const visibleItems = useMemo(
-    () => items.filter((item) => item.kind === kind),
-    [items, kind],
+  const catalogCategories = categories.filter((category) => category.kind === kind);
+  const visibleItems = items.filter(
+    (item) => item.kind === kind && (activeCategory === 'all' || item.category === activeCategory),
   );
 
   async function loadItems() {
@@ -113,18 +137,31 @@ export function AdminDashboard() {
       window.location.href = '/admin/login';
       return;
     }
-    setItems((await response.json()) as CmsItem[]);
+    const result = await readJson<CmsItem[]>(response);
+    if (!response.ok || !result) {
+      setStatus('Não foi possível carregar o catálogo. Tente atualizar a página.');
+      return;
+    }
+    setItems(result);
   }
 
   async function loadCategories() {
     const response = await fetch('/api/admin/categories', { cache: 'no-store' });
-    if (response.ok) setCategories((await response.json()) as CmsCategory[]);
+    const result = await readJson<CmsCategory[]>(response);
+    if (response.ok && result) setCategories(result);
+    else setStatus('Não foi possível carregar as categorias. Tente atualizar a página.');
   }
 
   useEffect(() => {
     void loadItems();
     void loadCategories();
   }, []);
+
+  useEffect(() => {
+    if (!status) return;
+    const timeout = window.setTimeout(() => setStatus(''), 4000);
+    return () => window.clearTimeout(timeout);
+  }, [status]);
 
   async function createCategory(event: FormEvent) {
     event.preventDefault();
@@ -135,32 +172,18 @@ export function AdminDashboard() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ kind, name: newCategory }),
     });
-    const result = await response.json();
-    if (!response.ok) setStatus(result.error || 'Não foi possível criar a categoria.');
+    const result = await readJson<{ slug: string; error?: string }>(response);
+    if (!response.ok || !result) setStatus(result?.error || 'Não foi possível criar a categoria.');
     else {
       setNewCategory('');
+      setCreatingCategory(false);
       await loadCategories();
-      setSelected((current) => ({ ...current, category: result.slug }));
+      setActiveCategory(result.slug);
+      setSelected({ ...blankItem(kind), category: result.slug });
+      setEditing(false);
       setStatus('Categoria criada e selecionada.');
     }
     setBusy(false);
-  }
-
-  async function removeCategory(category: CmsCategory) {
-    const response = await fetch(`/api/admin/categories?id=${encodeURIComponent(category.id)}`, { method: 'DELETE' });
-    const result = await response.json();
-    if (!response.ok) setStatus(result.error || 'Não foi possível eliminar a categoria.');
-    else {
-      await loadCategories();
-      if (selected.category === category.slug) setSelected((current) => ({ ...current, category: '' }));
-      setStatus('Categoria eliminada.');
-    }
-  }
-
-  function changeKind(nextKind: ContentKind) {
-    setKind(nextKind);
-    setSelected(blankItem(nextKind));
-    setStatus('');
   }
 
   function updateLocalized(
@@ -179,12 +202,13 @@ export function AdminDashboard() {
     const form = new FormData();
     form.set('file', file);
     const response = await fetch('/api/admin/upload', { method: 'POST', body: form });
-    const result = (await response.json()) as { url?: string; error?: string };
-    if (!response.ok || !result.url) throw new Error(result.error || 'Upload falhou.');
+    const result = await readJson<{ url?: string; error?: string }>(response);
+    if (!response.ok || !result?.url) throw new Error(result?.error || 'Upload falhou.');
+    const uploadedUrl = result.url;
     setSelected((current) => ({
       ...current,
-      coverImage: gallery ? current.coverImage || result.url! : result.url!,
-      images: gallery ? [...current.images, result.url!] : current.images,
+      coverImage: gallery ? current.coverImage || uploadedUrl : uploadedUrl,
+      images: gallery ? [...current.images, uploadedUrl] : current.images,
     }));
   }
 
@@ -213,9 +237,9 @@ export function AdminDashboard() {
         materials: selected.materials.pt,
       }),
     });
-    const result = await response.json();
-    if (!response.ok) {
-      setStatus(result.error || 'A tradução falhou.');
+    const result = await readJson<{ en: { title: string; description: string; materials: string }; fr: { title: string; description: string; materials: string }; error?: string }>(response);
+    if (!response.ok || !result) {
+      setStatus(result?.error || 'A tradução falhou.');
     } else {
       setSelected((current) => ({
         ...current,
@@ -244,8 +268,8 @@ export function AdminDashboard() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(selected),
     });
-    const result = await response.json();
-    if (!response.ok) setStatus(result.error || 'Não foi possível guardar.');
+    const result = await readJson<CmsItem & { error?: string }>(response);
+    if (!response.ok || !result) setStatus(result?.error || 'Não foi possível guardar.');
     else {
       setSelected(result as CmsItem);
       await loadItems();
@@ -261,11 +285,17 @@ export function AdminDashboard() {
     });
     await loadItems();
     setSelected(blankItem(kind));
+    setEditing(false);
     setStatus('Conteúdo eliminado.');
   }
 
+  const statusIsError = /não foi|falhou|obrigatóri|selecione/i.test(status);
+
   return (
     <div className="admin-shell">
+      {status && <div className={`admin-notice ${statusIsError ? 'is-error' : ''}`} role={statusIsError ? 'alert' : 'status'}>
+        {status}
+      </div>}
       <header className="admin-header">
         <Image
           src="/carpintaria-pintos-logo-menu-transparent.png"
@@ -287,51 +317,97 @@ export function AdminDashboard() {
 
       <div className="admin-workspace">
         <aside className="admin-sidebar">
-          <div className="admin-kind-switch">
-            <button className={kind === 'project' ? 'is-active' : ''} onClick={() => changeKind('project')}>Projetos</button>
-            <button className={kind === 'catalog' ? 'is-active' : ''} onClick={() => changeKind('catalog')}>Catálogo</button>
-          </div>
-          <div className="admin-category-manager">
-            <span>Categorias de {kind === 'project' ? 'projetos' : 'catálogo'}</span>
-            <form onSubmit={createCategory}>
-              <input value={newCategory} onChange={(event) => setNewCategory(event.target.value)} placeholder="Nova categoria" aria-label="Nova categoria" />
-              <button type="submit" disabled={busy} aria-label="Criar categoria"><Plus size={15} /></button>
-            </form>
-            <div>
-              {categories.filter((category) => category.kind === kind).map((category) => (
-                <span key={category.id}>{category.name.pt}<button type="button" aria-label={`Eliminar ${category.name.pt}`} onClick={() => void removeCategory(category)}><X size={12} /></button></span>
-              ))}
-            </div>
-          </div>
-          <button className="admin-new" type="button" onClick={() => setSelected(blankItem(kind))}>
-            <Plus size={16} /> Novo conteúdo
-          </button>
-          <div className="admin-item-list">
-            {visibleItems.map((item) => (
+          <div className="admin-category-list" aria-label="Categorias do catálogo">
+            <button
+              type="button"
+              className={activeCategory === 'all' ? 'is-active' : ''}
+              onClick={() => {
+                setActiveCategory('all');
+                setSelected(blankItem(kind));
+                setEditing(false);
+              }}
+            >Todos os itens</button>
+            {catalogCategories.map((category) => (
               <button
                 type="button"
-                className={selected.id === item.id ? 'is-active' : ''}
-                key={item.id}
-                onClick={() => { setSelected(item); setStatus(''); }}
-              >
-                <span>{item.title.pt}</span>
-                <small>{item.published ? 'Publicado' : 'Rascunho'}</small>
-              </button>
+                key={category.id}
+                className={activeCategory === category.slug ? 'is-active' : ''}
+                onClick={() => {
+                  setActiveCategory(category.slug);
+                  setSelected({ ...blankItem(kind), category: category.slug });
+                  setEditing(false);
+                }}
+              >{category.name.pt}</button>
             ))}
           </div>
+          <button className="admin-new admin-new-category" type="button" onClick={() => setCreatingCategory(true)}>
+            <Plus size={16} /> Nova categoria
+          </button>
+          {creatingCategory && <div className="admin-category-manager">
+            <form onSubmit={createCategory}>
+              <input autoFocus value={newCategory} onChange={(event) => setNewCategory(event.target.value)} placeholder="Ex.: Cozinhas" aria-label="Nome da nova categoria" />
+              <button type="submit" disabled={busy}><Plus size={15} /> Adicionar</button>
+            </form>
+          </div>}
         </aside>
 
-        <section className="admin-editor">
+        {!editing ? <section className="admin-editor admin-items-view">
           <div className="admin-editor-heading">
-            <div><span>{kind === 'project' ? 'Projeto' : 'Catálogo'}</span><h1>{selected.id ? 'Editar conteúdo' : 'Novo conteúdo'}</h1></div>
+            <div>
+              <span>Catálogo</span>
+              <h1>{activeCategory === 'all' ? 'Todos os itens' : catalogCategories.find((category) => category.slug === activeCategory)?.name.pt}</h1>
+            </div>
+            <button
+              className="admin-new"
+              type="button"
+              onClick={() => {
+                setSelected({ ...blankItem(kind), category: activeCategory === 'all' ? '' : activeCategory });
+                setStatus('');
+                setEditing(true);
+              }}
+            ><Plus size={16} /> Novo item</button>
+          </div>
+          <div className="admin-items-table-wrap">
+            <table className="admin-items-table">
+              <colgroup>
+                <col className="admin-items-table-image-column" />
+                <col />
+                <col className="admin-items-table-actions-column" />
+              </colgroup>
+              <thead><tr><th>Imagem</th><th>Título</th><th>Ações</th></tr></thead>
+              <tbody>{visibleItems.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.coverImage ? <img src={item.coverImage} alt="" /> : <span>—</span>}</td>
+                  <td>{item.title.pt}</td>
+                  <td><div className="admin-table-actions">
+                      <button type="button" onClick={() => { setSelected(item); setStatus(''); setEditing(true); }}><Pencil size={15} /> Editar</button>
+                      <AlertDialog>
+                        <AlertDialogTrigger className="admin-table-delete" onClick={() => setSelected(item)}><Trash2 size={15} /> Apagar</AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader><AlertDialogTitle>Eliminar este item?</AlertDialogTitle><AlertDialogDescription>Esta ação não pode ser anulada.</AlertDialogDescription></AlertDialogHeader>
+                          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={remove}>Eliminar</AlertDialogAction></AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </td>
+                </tr>
+              ))}</tbody>
+            </table>
+            {!visibleItems.length && <p className="admin-empty-items">Ainda não existem itens nesta categoria.</p>}
+          </div>
+        </section> : <section className="admin-editor">
+          <div className="admin-editor-heading">
+            <div><span>Catálogo</span><h1>{selected.id ? 'Editar item' : 'Novo item'}</h1></div>
             <div className="admin-editor-actions">
+              <button type="button" onClick={() => setEditing(false)}>Voltar à lista</button>
               <button type="button" onClick={translate} disabled={busy}><Languages size={17} /> Traduzir EN + FR</button>
               <button className="is-primary" type="button" onClick={save} disabled={busy}><Save size={17} /> Guardar</button>
             </div>
           </div>
 
           <div className="admin-fields admin-fields-meta">
-            <label>Categoria<select value={selected.category} onChange={(e) => setSelected({ ...selected, category: e.target.value })}><option value="">Selecionar categoria</option>{categories.filter((category) => category.kind === kind).map((category) => <option value={category.slug} key={category.id}>{category.name.pt}</option>)}</select></label>
+            <label>Categoria *<select value={selected.category} onChange={(e) => setSelected({ ...selected, category: e.target.value })}><option value="">Selecionar categoria</option>{categories.filter((category) => category.kind === kind).map((category) => <option value={category.slug} key={category.id}>{category.name.pt}</option>)}</select></label>
+            <label>Ano *<input type="number" min="1900" max="2100" step="1" placeholder="Ex.: 2026" value={selected.year} onChange={(e) => setSelected({ ...selected, year: e.target.value })} /></label>
             <label>Ordem<input type="number" value={selected.sortOrder} onChange={(e) => setSelected({ ...selected, sortOrder: Number(e.target.value) })} /></label>
             <label className="admin-checkbox"><input type="checkbox" checked={selected.published} onChange={(e) => setSelected({ ...selected, published: e.target.checked })} /> Publicado</label>
           </div>
@@ -346,36 +422,22 @@ export function AdminDashboard() {
               <TabsContent value={locale} key={locale}>
                 <div className="admin-fields">
                   <label>Título<input value={selected.title[locale]} onChange={(e) => updateLocalized('title', locale, e.target.value)} /></label>
-                  <label>Descrição<textarea rows={5} value={selected.description[locale]} onChange={(e) => updateLocalized('description', locale, e.target.value)} /></label>
-                  {kind === 'project' && <label>Materiais<textarea rows={3} value={selected.materials[locale]} onChange={(e) => updateLocalized('materials', locale, e.target.value)} /></label>}
+                  <label>Descrição{locale === 'pt' ? ' *' : ''}<textarea rows={5} value={selected.description[locale]} onChange={(e) => updateLocalized('description', locale, e.target.value)} /></label>
+                  <label>Materiais{locale === 'pt' ? ' *' : ''}<textarea rows={3} value={selected.materials[locale]} onChange={(e) => updateLocalized('materials', locale, e.target.value)} /></label>
                 </div>
               </TabsContent>
             ))}
           </Tabs>
 
-          {kind === 'project' && (
-            <div className="admin-fields admin-project-fields">
-              <label>Cliente<input value={selected.client} onChange={(e) => setSelected({ ...selected, client: e.target.value })} /></label>
-              <label>Localização<input value={selected.location} onChange={(e) => setSelected({ ...selected, location: e.target.value })} /></label>
-              <label>Ano<input value={selected.year} onChange={(e) => setSelected({ ...selected, year: e.target.value })} /></label>
-            </div>
-          )}
-
           <div className="admin-media">
             <div>
               <span>Imagem principal</span>
               {selected.coverImage && <img src={selected.coverImage} alt="" />}
-              <label className="admin-upload"><Upload size={16} /> Carregar imagem<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => { if (e.target.files?.[0]) void handleUpload(e.target.files[0]); }} /></label>
+              <label className="admin-upload"><Upload size={16} /> {selected.coverImage ? 'Substituir imagem' : 'Carregar imagem'}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => { if (e.target.files?.[0]) void handleUpload(e.target.files[0]); }} /></label>
             </div>
-            {kind === 'project' && <div>
-              <span>Galeria</span>
-              <div className="admin-gallery">{selected.images.map((image, index) => <button type="button" key={`${image}-${index}`} onClick={() => setSelected({ ...selected, images: selected.images.filter((_, i) => i !== index) })}><img src={image} alt="" /><Trash2 size={14} /></button>)}</div>
-              <label className="admin-upload"><Plus size={16} /> Adicionar fotografia<input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e) => { Array.from(e.target.files || []).forEach((file) => void handleUpload(file, true)); }} /></label>
-            </div>}
           </div>
 
           <div className="admin-editor-footer">
-            <output>{status}</output>
             {selected.id && <AlertDialog>
               <AlertDialogTrigger className="admin-delete"><Trash2 size={16} /> Eliminar</AlertDialogTrigger>
               <AlertDialogContent>
@@ -384,7 +446,7 @@ export function AdminDashboard() {
               </AlertDialogContent>
             </AlertDialog>}
           </div>
-        </section>
+        </section>}
       </div>
     </div>
   );

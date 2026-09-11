@@ -81,6 +81,9 @@ export function CatalogCoverflow({
         name:
           localized(item.title, locale) ||
           translatedCatalogCategory(item.category || item.slug, locale),
+        description: localized(item.description, locale),
+        materials: localized(item.materials, locale),
+        year: item.year,
         imageUrl: item.coverImage,
       })),
     [filteredItems, locale],
@@ -93,6 +96,7 @@ export function CatalogCoverflow({
     const controller = createPintoCarousel(mount, {
       imageUrl: referenceImage.src,
       items: carouselItems,
+      labels: { year: t.year, materials: t.materials },
     });
     return () => controller.destroy();
   }, [carouselItems]);
@@ -118,19 +122,18 @@ export function CatalogCoverflow({
         <div className={styles.ambientLight} aria-hidden="true" />
 
         <div className={styles.catalogIntro}>
+          <span className={styles.eyebrow}>{t.catalog}</span>
           <h1>
             {t.hero1}
             <span>{t.hero2}</span>
           </h1>
-          <span className={styles.introRule} aria-hidden="true" />
-          <p>{t.heroIntro}</p>
         </div>
 
         <div className={styles.carouselViewport}>
           {carouselItems.length ? (
             <div ref={mountRef} className={styles.carouselMount} />
           ) : (
-            <p className={styles.empty}>Não existem imagens nesta categoria.</p>
+            <p className={styles.empty}>{t.noCatalogImages}</p>
           )}
         </div>
 

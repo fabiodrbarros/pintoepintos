@@ -17,7 +17,7 @@ let instanceNumber = 0;
 /** Mount the carousel in an existing element; call destroy() before unmounting. */
 export function createPintoCarousel(
   container,
-  { imageUrl = defaultImageUrl, items, onChange } = {},
+  { imageUrl = defaultImageUrl, items, labels = {}, onChange } = {},
 ) {
   if (typeof container === 'string')
     container = document.querySelector(container);
@@ -51,8 +51,16 @@ export function createPintoCarousel(
   const titleId = `pp-image-title-${++instanceNumber}`;
   imageDialog.setAttribute('aria-labelledby', titleId);
   imageDialog.innerHTML = `
-    <h2 class="pp-sr-only pp-image-dialog-title" id="${titleId}"></h2>
     <div class="pp-image-dialog-photo"><img width="1672" height="941" alt="" draggable="false"></div>
+    <div class="pp-image-dialog-details">
+      <h2 class="pp-image-dialog-title" id="${titleId}"></h2>
+      <dl>
+        <div><dt>${labels.year || 'Ano'}</dt><dd class="pp-image-dialog-year"></dd></div>
+        <div><dt>${labels.materials || 'Materiais'}</dt><dd class="pp-image-dialog-materials"></dd></div>
+      </dl>
+      <p class="pp-image-dialog-description"></p>
+    </div>
+    <span class="pp-image-dialog-brand" aria-label="Carpintaria Pinto & Pintos"></span>
     <button class="pp-image-dialog-close" type="button" aria-label="Fechar imagem" autofocus><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>`;
   imageDialog.querySelector('img').src = imageUrl;
   document.body.append(imageDialog);
@@ -123,6 +131,9 @@ export function createPintoCarousel(
   const categories = dynamicItems
     ? items.map((item, index) => ({
         name: item.name || `Imagem ${index + 1}`,
+        description: item.description || '',
+        materials: item.materials || '',
+        year: item.year || '',
         imageUrl: item.imageUrl,
         face: dynamicFace,
         id: item.id ?? String(index),
@@ -197,8 +208,12 @@ export function createPintoCarousel(
     dialogCategory = category;
     dialogOpener = opener;
     imageDialog.classList.remove('pp-is-closing');
+    imageDialog.classList.toggle('pp-has-details', dynamicItems);
     imageDialog.querySelector('.pp-image-dialog-title').textContent =
-      categories[category].name;
+      categories[category].name.toLocaleUpperCase();
+    imageDialog.querySelector('.pp-image-dialog-year').textContent = categories[category].year || '—';
+    imageDialog.querySelector('.pp-image-dialog-materials').textContent = categories[category].materials || '—';
+    imageDialog.querySelector('.pp-image-dialog-description').textContent = categories[category].description || '—';
     dialogImage.alt = categories[category].name;
     if (dynamicItems) dialogImage.src = categories[category].imageUrl;
     imageDialog.showModal();
@@ -208,15 +223,7 @@ export function createPintoCarousel(
   function closeImage() {
     if (!imageDialog.open || imageDialog.classList.contains('pp-is-closing'))
       return;
-    if (reducedMotion.matches) {
-      imageDialog.close();
-      return;
-    }
-    imageDialog.classList.add('pp-is-closing');
-    closeTimer = setTimeout(() => {
-      closeTimer = null;
-      imageDialog.close();
-    }, 180);
+    imageDialog.close();
   }
 
   imageDialog.querySelector('.pp-image-dialog-close').onclick = closeImage;
@@ -364,7 +371,10 @@ export function createPintoCarousel(
       const item = categories[card.category];
       card.button.dataset.category = String(card.category);
       card.button.dataset.itemId = item.id ?? String(card.category);
-      card.button.setAttribute('aria-label', `Ver imagem: ${item.name}`);
+      card.button.setAttribute(
+        'aria-label',
+        item.description ? `${item.name}: ${item.description}` : `Ver imagem: ${item.name}`,
+      );
       for (const [kind, element] of Object.entries(card.surfaces)) {
         const source = surfaceSource(kind, card.category);
         const image = element.querySelector('img');

@@ -1,10 +1,10 @@
-# Publicação na VPS
+# Publicação na VPS com Docker Compose
 
 1. Instale Docker Engine e o plugin Docker Compose no Ubuntu.
-2. Copie o projeto para a VPS e crie `.env` a partir de `.env.example`.
-3. No Cloudflare Zero Trust, crie um Tunnel e configure o hostname público para `http://website:3000`.
-4. Coloque o token do Tunnel em `CLOUDFLARE_TUNNEL_TOKEN`.
-5. Inicie a aplicação com `docker compose up -d --build`.
+2. Clone o repositório na VPS e crie `.env` a partir de `.env.example`.
+3. Defina credenciais fortes para o painel em `.env`.
+4. Inicie a aplicação com `docker compose up -d --build`.
+5. Configure separadamente o seu proxy reverso para a interface e porta indicadas por `BIND_ADDRESS` e `PORT`.
 
 O painel fica em `/admin`. A base de dados e as imagens carregadas ficam no volume Docker `pintos-data`, pelo que sobrevivem à substituição do container.
 

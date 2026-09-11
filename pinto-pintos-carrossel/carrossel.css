@@ -13,7 +13,7 @@
   isolation: isolate;
   touch-action: pan-y;
   color: #302a24;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 .pp-carousel button,
 .pp-image-dialog button {
@@ -187,6 +187,47 @@
   user-select: none;
   pointer-events: none;
 }
+.pp-image-dialog-title,
+.pp-image-dialog-details { display: none; }
+.pp-image-dialog.pp-has-details[open] {
+  width: min(1100px, 94vw);
+  height: min(700px, 86svh);
+  aspect-ratio: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(270px, .65fr);
+  overflow: hidden;
+}
+.pp-image-dialog.pp-has-details[open] .pp-image-dialog-photo {
+  position: relative;
+  inset: auto;
+  border-radius: 0;
+}
+.pp-image-dialog.pp-has-details[open] .pp-image-dialog-title {
+  position: static;
+  display: block;
+  margin: 0;
+  padding-right: 42px;
+  color: #29221d;
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+.pp-image-dialog.pp-has-details[open] .pp-image-dialog-details {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 34px 32px;
+  overflow: auto;
+  background: #f7f3ed;
+  color: #332b24;
+}
+.pp-image-dialog-details dl { display: grid; gap: 16px; margin: 0; padding: 18px 0; border-block: 1px solid #d9cec1; }
+.pp-image-dialog-details dl div { display: grid; gap: 5px; }
+.pp-image-dialog-details dt { color: #927252; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.pp-image-dialog-details dd { margin: 0; font-size: 14px; line-height: 1.45; }
+.pp-image-dialog-details p { margin: 0; font-size: 15px; line-height: 1.6; }
+.pp-image-dialog-brand { display: none; }
+.pp-image-dialog.pp-has-details[open] .pp-image-dialog-brand { position: absolute; z-index: 2; right: 20px; bottom: 20px; display: block; width: 38px; height: 38px; background: url('/icon.png') center / contain no-repeat; }
 .pp-image-dialog .pp-image-dialog-close {
   position: absolute;
   top: 21px;
@@ -219,6 +260,12 @@
 .pp-image-dialog-close:focus-visible {
   outline: 2px solid white;
   outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .pp-image-dialog.pp-has-details[open] { height: min(88svh, 720px); grid-template-columns: 1fr; overflow: auto; }
+  .pp-image-dialog.pp-has-details[open] .pp-image-dialog-photo { min-height: 280px; }
+  .pp-image-dialog.pp-has-details[open] .pp-image-dialog-details { grid-row: 2; padding: 28px 24px 30px; overflow: visible; }
+  .pp-image-dialog.pp-has-details[open] .pp-image-dialog-brand { top: 242px; right: 18px; bottom: auto; width: 30px; height: 30px; background-size: auto 30px; }
 }
 .pp-image-dialog.pp-is-closing {
   animation: pp-image-dismiss 0.18s ease forwards;

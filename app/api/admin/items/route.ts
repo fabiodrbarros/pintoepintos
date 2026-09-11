@@ -13,30 +13,38 @@ async function unauthorized() {
 
 export async function GET(request: NextRequest) {
   if (!(await isAdmin())) return unauthorized();
-  const kind = request.nextUrl.searchParams.get('kind') as ContentKind | null;
-  return NextResponse.json(listItems(kind || undefined, true));
+  try {
+    const kind = request.nextUrl.searchParams.get('kind') as ContentKind | null;
+    return NextResponse.json(listItems(kind || undefined, true));
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Não foi possível carregar os conteúdos.' },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
   if (!(await isAdmin())) return unauthorized();
   try {
     const item = (await request.json()) as CmsItem;
-    if (!['catalog', 'project'].includes(item.kind) || !item.title?.pt) {
+    if (
+      item.kind !== 'catalog' ||
+      !item.title?.pt?.trim() ||
+      !item.description?.pt?.trim() ||
+      !item.materials?.pt?.trim() ||
+      !item.year?.trim() ||
+      !item.coverImage
+    ) {
       return NextResponse.json(
-        { error: 'Tipo e título em português são obrigatórios.' },
+        { error: 'Imagem, título, data, descrição e materiais em português são obrigatórios.' },
         { status: 400 },
       );
     }
     if (!categoryExists(item.kind, item.category)) {
       return NextResponse.json({ error: 'Selecione uma categoria válida.' }, { status: 400 });
     }
-    if (item.published && !item.coverImage) {
-      return NextResponse.json(
-        { error: 'Adicione uma imagem principal antes de publicar.' },
-        { status: 400 },
-      );
-    }
-    if (item.kind === 'catalog' && !item.category) {
+    if (!item.category) {
       return NextResponse.json(
         { error: 'A categoria é obrigatória nos elementos do catálogo.' },
         { status: 400 },
@@ -46,7 +54,7 @@ export async function POST(request: Request) {
       ...item,
       id: item.id || randomUUID(),
       slug: slugify(item.title.pt),
-      images: Array.isArray(item.images) ? item.images.filter(Boolean) : [],
+      images: item.coverImage ? [item.coverImage] : [],
       sortOrder: Number(item.sortOrder) || 0,
       published: Boolean(item.published),
     };

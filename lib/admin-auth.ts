@@ -48,3 +48,10 @@ export function passwordMatches(password: string) {
   const supplied = Buffer.from(password);
   return expected.length === supplied.length && timingSafeEqual(expected, supplied);
 }
+
+export function usernameMatches(username: string) {
+  const expectedUsername = process.env.ADMIN_USERNAME || 'admin';
+  const expected = Buffer.from(expectedUsername);
+  const supplied = Buffer.from(username);
+  return expected.length === supplied.length && timingSafeEqual(expected, supplied);
+}

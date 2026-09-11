@@ -3,6 +3,7 @@ import {
   adminCookieName,
   createAdminToken,
   passwordMatches,
+  usernameMatches,
 } from '@/lib/admin-auth';
 
 const attempts = new Map<string, { count: number; resetAt: number }>();
@@ -20,10 +21,10 @@ export async function POST(request: Request) {
     if (current && current.resetAt > now && current.count >= 8) {
       return NextResponse.json({ error: 'Demasiadas tentativas. Tente novamente dentro de alguns minutos.' }, { status: 429 });
     }
-    const { password } = (await request.json()) as { password?: string };
-    if (!password || !passwordMatches(password)) {
+    const { username, password } = (await request.json()) as { username?: string; password?: string };
+    if (!username || !password || !usernameMatches(username) || !passwordMatches(password)) {
       attempts.set(address, current && current.resetAt > now ? { ...current, count: current.count + 1 } : { count: 1, resetAt: now + windowMs });
-      return NextResponse.json({ error: 'Palavra-passe incorreta.' }, { status: 401 });
+      return NextResponse.json({ error: 'Utilizador ou palavra-passe incorretos.' }, { status: 401 });
     }
     attempts.delete(address);
     const response = NextResponse.json({ ok: true });

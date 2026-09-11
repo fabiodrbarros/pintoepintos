@@ -1,14 +1,12 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Hammer, Ruler, Wrench } from 'lucide-react';
 import { SectionLabel } from '@/components/site';
 import { useLocale } from '@/components/locale';
-
-const StudioPanels = dynamic(() => import('@/components/studio-panels'), { ssr: false });
+import StudioPanels from '@/components/studio-panels';
 
 export function AboutStudioPage() {
   const { t } = useLocale();
@@ -56,27 +54,29 @@ export function AboutStudioPage() {
         <div ref={pinned} className="studio-pin">
           <div ref={canvas} className="studio-canvas" aria-hidden="true"><StudioPanels progress={progress} /></div>
           <div ref={intro} className="studio-intro about-opening-copy">
-            <SectionLabel>{t.aboutUs}</SectionLabel>
+            <SectionLabel>{t.essence}</SectionLabel>
             <h1>{t.hero1}<br /><span>{t.hero2}</span></h1>
+            <i className="studio-fine-rule" aria-hidden="true" />
             <p>{t.aboutIntro}</p>
             <div className="about-origin"><span>{t.since}</span><span>Prozelo · Arcos de Valdevez</span></div>
           </div>
           <div ref={history} className="studio-history about-history-copy">
             <SectionLabel>{t.ourHistory}</SectionLabel>
             <h2><span className="about-title-line">{t.story1}</span><span className="about-title-line about-title-accent">{t.story2}</span></h2>
-            <p>{t.historyP1}</p><p>{t.historyP2}</p>
+            <i className="studio-fine-rule" aria-hidden="true" />
+            <p>{t.historyP1} {t.historyP2}</p>
           </div>
           <div ref={quality} className="studio-quality-stage">
             <SectionLabel>{t.defines}</SectionLabel>
             <h2>{t.detail1}<br /><span>{t.detail2}</span></h2>
+            <i className="studio-fine-rule" aria-hidden="true" />
             <p>{t.qualityP}</p>
-            <div className="about-stages" aria-label="Etapas do nosso trabalho">
+            <div className="about-stages" aria-label={t.workStages}>
               <div><Ruler aria-hidden="true" /><span>01</span><strong>{t.stages[0]}</strong></div>
               <div><Hammer aria-hidden="true" /><span>02</span><strong>{t.stages[1]}</strong></div>
               <div><Wrench aria-hidden="true" /><span>03</span><strong>{t.stages[2]}</strong></div>
             </div>
           </div>
-          <div className="studio-scroll-cue" aria-hidden="true"><span /> SCROLL</div>
         </div>
       </section>
     </div>

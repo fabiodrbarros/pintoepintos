@@ -1,5 +1,5 @@
 /* Component styles only. The host keeps ownership of its page and navigation. */
-.pinto-flow { --ink:#28251f; --oak:#a58364; --pinto-flow-top:0px; color-scheme:light; color:var(--ink); font-family:Arial,Helvetica,sans-serif; }
+.pinto-flow { --ink:#28251f; --oak:#8f6847; --pinto-flow-top:0px; color-scheme:light; color:var(--ink); font-family:var(--font-sans); }
 .pinto-flow, .pinto-flow *, .pinto-flow *::before, .pinto-flow *::after { box-sizing:border-box; }
 .pinto-flow.story { position:relative; height:790svh; }
 .pinto-flow .cinema { position:sticky; top:var(--pinto-flow-top); width:100%; height:calc(100svh - var(--pinto-flow-top)); overflow:hidden; isolation:isolate; background:#e9e0d4; }
@@ -27,25 +27,41 @@
 .pinto-flow .photographic-panels { position:absolute; inset:0; width:100%; height:100%; z-index:101000; pointer-events:none; }
 .pinto-flow .photographic-panels[hidden] { display:none; }
 .pinto-flow .pickup-shadow { position:absolute; z-index:102100; pointer-events:none; opacity:0; background:#33210c; filter:blur(22px); border-radius:6px; }
-.pinto-flow .copy { position:absolute; z-index:5; left:5.1%; width:32%; pointer-events:none; }
-.pinto-flow .copy-origin { top:17%; }
-.pinto-flow .copy h1 { margin:0; font-size:clamp(23px,2.17vw,46px); line-height:1.14; font-weight:400; letter-spacing:-.047em; text-transform:uppercase; }
-.pinto-flow .copy-origin h1 .hero-title-line { display:block; white-space:nowrap; }
+.pinto-flow .copy { position:absolute; z-index:5; left:5.5%; width:32%; pointer-events:none; }
+.pinto-flow .copy-origin { top:18%; width:45%; }
+.pinto-flow .copy h1 { margin:0; font-size:clamp(25px,2.35vw,48px); line-height:1.12; font-weight:400; letter-spacing:-.05em; text-transform:uppercase; }
+.pinto-flow .copy-origin h1 .hero-title-line { display:block; white-space:nowrap; color:var(--ink); }
 .pinto-flow .copy-origin h1 .hero-title-emphasis { color:var(--oak); }
 .pinto-flow .copy h1 span { color:var(--oak); }
-.pinto-flow .copy p { margin:0; max-width:300px; font-size:clamp(12px,.75vw,16px); line-height:1.65; color:#484039; }
-.pinto-flow .fine-rule { display:block; width:52px; height:1px; margin:29px 0; background:#716252; }
-.pinto-flow .copy-form { top:29%; left:61%; width:33%; opacity:0; }
-.pinto-flow .copy-form p { max-width:330px; }
+.pinto-flow .copy-origin p { width:100%; max-width:470px !important; }
+.pinto-flow .copy p { margin:0; max-width:310px; font-size:clamp(12px,.78vw,16px); line-height:1.65; color:#484039; }
+.pinto-flow .fine-rule { display:block; width:55px; height:1px; margin:30px 0; background:#716252; }
+.pinto-flow .pinto-hero-foot { position:absolute; z-index:6; right:5.1%; bottom:26px; left:5.1%; display:flex; align-items:center; justify-content:space-between; gap:24px; color:#27231e; font-size:9px; letter-spacing:.17em; line-height:1.45; text-transform:uppercase; }
+.pinto-flow .pinto-hero-signature, .pinto-flow .pinto-hero-actions { display:flex; align-items:center; gap:24px; }
+.pinto-flow .pinto-hero-signature i, .pinto-flow .pinto-hero-actions > i { display:block; width:1px; height:15px; background:#554b40; }
+.pinto-flow .pinto-hero-actions { gap:19px; }
+.pinto-flow .pinto-hero-actions a { display:inline-flex; align-items:center; justify-content:center; color:inherit; transition:color .2s, transform .2s; }
+.pinto-flow .pinto-hero-actions a:hover { color:var(--oak); transform:translateY(-2px); }
+.pinto-flow .pinto-hero-actions svg { width:15px; height:15px; }
+.pinto-flow .pinto-hero-contact { gap:24px; margin-left:5px; white-space:nowrap; }
+.pinto-flow .pinto-hero-contact span { font-size:16px; line-height:1; }
+.pinto-flow .copy-form { top:18%; left:61%; width:37%; opacity:0; }
+.pinto-flow .copy.copy-form h2 { font-size:clamp(25px,2.35vw,48px); line-height:1.12; font-weight:400; letter-spacing:-.05em; text-transform:uppercase; }
+.pinto-flow .copy-form p { max-width:520px; }
 .pinto-flow .copy-catalog { top:14%; left:5.1%; width:89.8%; opacity:0; }
-.pinto-flow .copy-catalog h2 { font-size:clamp(32px,3vw,56px); }
-.pinto-flow .copy-catalog .catalog-caption { position:absolute; top:0; left:61%; width:38%; max-width:540px; font-size:clamp(14px,.85vw,17px); line-height:1.55; opacity:0; transition:opacity .2s; }
+.pinto-flow .copy.copy-catalog h2 { font-size:clamp(25px,2.35vw,48px); line-height:1.12; font-weight:400; letter-spacing:-.05em; text-transform:uppercase; }
+.pinto-flow .copy-catalog .catalog-caption { position:absolute; z-index:2; top:calc(100% + 20px); left:0; width:min(100%,460px); max-width:460px; font-size:clamp(14px,.85vw,17px); line-height:1.55; opacity:0; transition:opacity .2s; }
 .pinto-flow .engraved-catalog { position:absolute; inset:0; z-index:103000; pointer-events:none; opacity:0; }
 .pinto-flow .engraved-catalog[hidden] { display:none; }
 .pinto-flow .catalog-panel { position:absolute; left:0; top:0; transform-origin:0 0; text-decoration:none; color:#543119; pointer-events:none; outline-offset:-8px; }
 .pinto-flow .catalog-panel:focus-visible { outline:2px solid #55361c; }
 .pinto-flow .catalog-engraving { position:absolute; top:82px; left:50%; width:124px; height:148px; transform:translateX(-50%); filter:drop-shadow(0 1px .5px #ffe8ba99); opacity:.84; transition:opacity .2s; }
 .pinto-flow .catalog-engraving::before { content:''; position:absolute; inset:0; background:currentColor; -webkit-mask:var(--catalog-icon) center/contain no-repeat; mask:var(--catalog-icon) center/contain no-repeat; }
+.pinto-flow .catalog-engraving-text { display:grid; place-content:center; width:calc(100% - 28px); height:148px; color:inherit; font-size:26px; line-height:1.2; letter-spacing:-.03em; text-align:center; filter:none; }
+.pinto-flow .catalog-engraving-text::before { content:none; }
+.pinto-flow .catalog-engraving-text span { display:block; }
+.pinto-flow .catalog-icon { position:absolute; top:82px; left:50%; display:block; width:124px; height:148px; object-fit:contain; transform:translateX(-50%); filter:brightness(0) saturate(100%) invert(18%) sepia(31%) saturate(1280%) hue-rotate(350deg) brightness(88%) contrast(94%) drop-shadow(0 1px .5px #ffe8ba99); opacity:.9; transition:opacity .2s; }
+.pinto-flow .catalog-panel-dark .catalog-icon { filter:brightness(0) saturate(100%) invert(89%) sepia(24%) saturate(516%) hue-rotate(344deg) brightness(99%) contrast(91%) drop-shadow(0 -1px 1px #150b03); }
 .pinto-flow .catalog-name { position:absolute; left:8px; right:8px; bottom:54px; text-align:center; font-size:26px; line-height:1.2; font-weight:400; letter-spacing:-.03em; text-shadow:0 1px .5px #ffe1aeb3; }
 .pinto-flow .catalog-name span { display:block; }
 .pinto-flow .catalog-panel-dark { color:#e3c295; }
@@ -53,12 +69,13 @@
 .pinto-flow .catalog-panel-dark .catalog-name { text-shadow:0 -1px 1px #150b03; }
 .pinto-flow .catalog-panel-dark:focus-visible { outline-color:#f2d7aa; }
 .pinto-flow .catalog-panel:hover .catalog-engraving, .pinto-flow .catalog-panel:focus-visible .catalog-engraving { opacity:1; }
+.pinto-flow .catalog-panel:hover .catalog-icon, .pinto-flow .catalog-panel:focus-visible .catalog-icon { opacity:1; }
 .pinto-flow .eyebrow { display:block; text-transform:uppercase; letter-spacing:.23em; font-size:10px; margin-bottom:23px; color:#6f5e4c; }
 .pinto-flow .copy h2 { margin:0; font-weight:400; font-size:clamp(35px,4vw,76px); letter-spacing:-.058em; line-height:1.04; }
 .pinto-flow .copy h2 em { font-style:normal; color:var(--oak); }
-.pinto-flow .copy-material { top:32%; left:5.1%; width:29%; text-align:left; opacity:0; }
+.pinto-flow .copy-material { top:32%; left:5.1%; width:min(62%, 780px); text-align:left; opacity:0; }
 .pinto-flow .copy-material .eyebrow { margin-bottom:18px; }
-.pinto-flow .copy-material h2 { font-size:clamp(36px,3.55vw,67px); }
+.pinto-flow .copy.copy-material h2 { font-size:clamp(25px,2.35vw,48px); line-height:1.12; font-weight:400; letter-spacing:-.05em; text-transform:uppercase; white-space:nowrap; }
 .pinto-flow .copy-material p { margin:24px 0 0; max-width:330px; }
 .pinto-flow .material-inspector { position:absolute; z-index:7; left:5.1%; top:30%; width:29%; max-width:420px; padding:24px 0; opacity:0; pointer-events:none; }
 .pinto-flow .material-inspector::before { content:''; position:absolute; z-index:-1; inset:-40px -55px; background:radial-gradient(ellipse,#eee5d9f2 28%,#eee5d9bd 60%,transparent 75%); filter:blur(18px); }
@@ -72,7 +89,7 @@
 .pinto-flow .return-sample:focus-visible { outline:1px solid currentColor; outline-offset:6px; }
 .pinto-flow .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 @media(max-width:1100px) {
-  .pinto-flow .copy-origin { width:34%; }
+  .pinto-flow .copy-origin { width:44%; }
 }
 @media(max-width:759px) and (orientation:portrait) {
   .pinto-flow.story { height:730svh; }
@@ -84,15 +101,17 @@
   .pinto-flow .copy-form { top:14%; left:8%; width:84%; }
   .pinto-flow .eyebrow { font-size:8px; margin-bottom:14px; }
   .pinto-flow .copy h2 { font-size:clamp(39px,10vw,62px); }
-  .pinto-flow .copy-form h2 br { display:none; }
+  .pinto-flow .copy.copy-form h2 { font-size:clamp(26px,6.2vw,42px); line-height:1.12; letter-spacing:-.05em; }
+  .pinto-flow .copy-form h2 br { display:initial; }
   .pinto-flow .copy-form p { max-width:290px; }
   .pinto-flow .copy-catalog { top:14%; left:8%; width:84%; }
-  .pinto-flow .copy-catalog h2 { font-size:clamp(32px,8.5vw,44px); }
+  .pinto-flow .copy.copy-catalog h2 { font-size:clamp(26px,6.2vw,42px); line-height:1.12; letter-spacing:-.05em; }
   .pinto-flow .copy-catalog .catalog-caption { display:none; }
   .pinto-flow .catalog-engraving { top:46px; width:116px; height:134px; }
+  .pinto-flow .catalog-icon { top:46px; width:116px; height:134px; }
   .pinto-flow .catalog-name { bottom:36px; font-size:28px; }
   .pinto-flow .copy-material { top:15%; left:8%; width:84%; }
-  .pinto-flow .copy-material h2 { font-size:clamp(34px,8.5vw,55px); }
+  .pinto-flow .copy.copy-material h2 { font-size:clamp(26px,6.2vw,42px); line-height:1.12; letter-spacing:-.05em; white-space:normal; }
   .pinto-flow .copy-material p { margin-top:17px; }
   .pinto-flow .material-inspector { left:8%; top:13%; width:84%; max-width:none; padding:0; }
   .pinto-flow .material-inspector::before { inset:-20px -35px; }
@@ -102,6 +121,10 @@
   .pinto-flow .sample-description { font-size:12px; line-height:1.6; max-width:320px; margin-top:15px; }
   .pinto-flow .return-sample { margin-top:15px; font-size:9px; gap:14px; }
   .pinto-flow .wood-shadow { filter:blur(6px); }
+  .pinto-flow .pinto-hero-foot { right:8%; bottom:18px; left:8%; align-items:flex-end; }
+  .pinto-flow .pinto-hero-signature { display:none; }
+  .pinto-flow .pinto-hero-actions { margin-left:auto; gap:15px; font-size:8px; }
+  .pinto-flow .pinto-hero-contact { gap:14px; margin-left:0; }
 }
 @media(prefers-reduced-motion:reduce) {
   .pinto-flow .wood-world { transition:none; }

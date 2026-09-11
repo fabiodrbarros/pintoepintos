@@ -1,7 +1,6 @@
 import 'server-only';
 
-import type Database from 'better-sqlite3';
-import { createRequire } from 'node:module';
+import Database from 'better-sqlite3';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -10,16 +9,8 @@ import type { CmsCategory, CmsItem, ContentKind } from '@/lib/cms-types';
 import { categoriesFor } from '@/lib/categories';
 
 const databasePath = process.env.DATABASE_PATH || './data/site.db';
-const runtimeRequire = createRequire(import.meta.url);
-
 function openDatabase(path: string): Database.Database {
-  const packageName = ['better', 'sqlite3'].join('-');
-  const loaded = runtimeRequire(packageName) as
-    | typeof Database
-    | { default: typeof Database };
-  const DatabaseConstructor =
-    typeof loaded === 'function' ? loaded : loaded.default;
-  return new DatabaseConstructor(path);
+  return new Database(path);
 }
 
 type GlobalDatabase = typeof globalThis & {
