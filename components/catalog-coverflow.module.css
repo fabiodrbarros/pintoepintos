@@ -233,6 +233,15 @@
 }
 
 @media (max-width: 767px) {
+  .page {
+    min-height: 100dvh;
+  }
+
+  .stage {
+    height: 100dvh;
+    min-height: 600px;
+  }
+
   .catalogIntro {
     top: 88px;
     left: 22px;
