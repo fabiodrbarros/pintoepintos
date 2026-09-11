@@ -288,8 +288,10 @@ export function saveItem(item: CmsItem) {
     });
 }
 
-export function deleteItem(id: string) {
-  return getDb().prepare('DELETE FROM content_items WHERE id = ?').run(id);
+export function deleteCatalogItem(id: string) {
+  return getDb()
+    .prepare("DELETE FROM content_items WHERE id = ? AND kind = 'catalog'")
+    .run(id);
 }
 
 type CategoryRow = { id: string; kind: ContentKind; slug: string; name_pt: string; name_en: string; name_fr: string; sort_order: number };

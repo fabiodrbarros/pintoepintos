@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin } from '@/lib/admin-auth';
-import { categoryExists, deleteItem, listItems, saveItem } from '@/lib/db';
+import { categoryExists, deleteCatalogItem, listItems, saveItem } from '@/lib/db';
 import type { CmsItem, ContentKind } from '@/lib/cms-types';
 import { slugify } from '@/lib/slug';
 
@@ -72,6 +73,18 @@ export async function DELETE(request: NextRequest) {
   if (!(await isAdmin())) return unauthorized();
   const id = request.nextUrl.searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'ID em falta.' }, { status: 400 });
-  deleteItem(id);
-  return NextResponse.json({ ok: true });
+  try {
+    const result = deleteCatalogItem(id);
+    if (result.changes !== 1) {
+      return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 404 });
+    }
+    revalidatePath('/catalogo');
+    revalidatePath('/api/content');
+    return NextResponse.json({ ok: true, id });
+  } catch {
+    return NextResponse.json(
+      { error: 'Não foi possível eliminar o produto. Tente novamente.' },
+      { status: 500 },
+    );
+  }
 }

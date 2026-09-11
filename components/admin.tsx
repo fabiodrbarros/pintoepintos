@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowLeft, Languages, LogOut, Pencil, Plus, Save, Trash2, Upload } from 'lucide-react';
 import type { CmsCategory, CmsItem, ContentKind, Locale } from '@/lib/cms-types';
 import { emptyLocalizedText } from '@/lib/cms-types';
@@ -15,7 +15,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -125,6 +124,12 @@ export function AdminDashboard() {
   const [selected, setSelected] = useState<CmsItem>(blankItem('catalog'));
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<CmsItem | null>(null);
+  const [deleteError, setDeleteError] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const deleteCancelRef = useRef<HTMLButtonElement>(null);
+  const deleteTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const newItemRef = useRef<HTMLButtonElement>(null);
 
   const catalogCategories = categories.filter((category) => category.kind === kind);
   const visibleItems = items.filter(
@@ -278,15 +283,48 @@ export function AdminDashboard() {
     setBusy(false);
   }
 
+  function requestDelete(item: CmsItem, trigger: HTMLButtonElement) {
+    deleteTriggerRef.current = trigger;
+    setDeleteError('');
+    setDeleteTarget(item);
+  }
+
   async function remove() {
-    if (!selected.id) return;
-    await fetch(`/api/admin/items?id=${encodeURIComponent(selected.id)}`, {
-      method: 'DELETE',
-    });
-    await loadItems();
-    setSelected(blankItem(kind));
-    setEditing(false);
-    setStatus('Conteúdo eliminado.');
+    const target = deleteTarget;
+    if (!target?.id || deleting) return;
+
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      const response = await fetch(`/api/admin/items?id=${encodeURIComponent(target.id)}`, {
+        method: 'DELETE',
+      });
+      const result = await readJson<{ ok?: boolean; error?: string }>(response);
+      if (response.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      if (!response.ok || !result?.ok) {
+        throw new Error(result?.error || 'Não foi possível eliminar o produto. Tente novamente.');
+      }
+
+      setItems((current) => current.filter((item) => item.id !== target.id));
+      if (selected.id === target.id) {
+        setSelected(blankItem(kind));
+        setEditing(false);
+      }
+      setDeleteTarget(null);
+      setStatus(`“${target.title.pt}” foi eliminado.`);
+      await loadItems();
+    } catch (error) {
+      const message = error instanceof Error
+        ? error.message
+        : 'Não foi possível eliminar o produto. Tente novamente.';
+      setDeleteError(message);
+      setStatus(message);
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const statusIsError = /não foi|falhou|obrigatóri|selecione/i.test(status);
@@ -358,6 +396,7 @@ export function AdminDashboard() {
               <h1>{activeCategory === 'all' ? 'Todos os itens' : catalogCategories.find((category) => category.slug === activeCategory)?.name.pt}</h1>
             </div>
             <button
+              ref={newItemRef}
               className="admin-new"
               type="button"
               onClick={() => {
@@ -381,13 +420,11 @@ export function AdminDashboard() {
                   <td>{item.title.pt}</td>
                   <td><div className="admin-table-actions">
                       <button type="button" onClick={() => { setSelected(item); setStatus(''); setEditing(true); }}><Pencil size={15} /> Editar</button>
-                      <AlertDialog>
-                        <AlertDialogTrigger className="admin-table-delete" onClick={() => setSelected(item)}><Trash2 size={15} /> Apagar</AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader><AlertDialogTitle>Eliminar este item?</AlertDialogTitle><AlertDialogDescription>Esta ação não pode ser anulada.</AlertDialogDescription></AlertDialogHeader>
-                          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={remove}>Eliminar</AlertDialogAction></AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <button
+                        type="button"
+                        className="admin-table-delete"
+                        onClick={(event) => requestDelete(item, event.currentTarget)}
+                      ><Trash2 size={15} /> Apagar</button>
                     </div>
                   </td>
                 </tr>
@@ -438,16 +475,54 @@ export function AdminDashboard() {
           </div>
 
           <div className="admin-editor-footer">
-            {selected.id && <AlertDialog>
-              <AlertDialogTrigger className="admin-delete"><Trash2 size={16} /> Eliminar</AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader><AlertDialogTitle>Eliminar este conteúdo?</AlertDialogTitle><AlertDialogDescription>Esta ação não pode ser anulada.</AlertDialogDescription></AlertDialogHeader>
-                <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={remove}>Eliminar</AlertDialogAction></AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>}
+            {selected.id && <button
+              type="button"
+              className="admin-delete"
+              onClick={(event) => requestDelete(selected, event.currentTarget)}
+            ><Trash2 size={16} /> Eliminar</button>}
           </div>
         </section>}
       </div>
+      <AlertDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open && !deleting) {
+            setDeleteTarget(null);
+            setDeleteError('');
+          }
+        }}
+      >
+        <AlertDialogContent
+          className="admin-confirm-dialog"
+          initialFocus={deleteCancelRef}
+          finalFocus={() => deleteTriggerRef.current?.isConnected
+            ? deleteTriggerRef.current
+            : newItemRef.current}
+        >
+          <AlertDialogHeader className="admin-confirm-header">
+            <AlertDialogTitle className="admin-confirm-title">
+              Eliminar “{deleteTarget?.title.pt}”?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="admin-confirm-description">
+              Esta ação elimina definitivamente este produto do catálogo e não pode ser anulada.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {deleteError && <p className="admin-confirm-error" role="alert">{deleteError}</p>}
+          <AlertDialogFooter className="admin-confirm-footer">
+            <AlertDialogCancel
+              ref={deleteCancelRef}
+              className="admin-confirm-cancel"
+              disabled={deleting}
+            >Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              type="button"
+              className="admin-confirm-delete"
+              disabled={deleting}
+              onClick={() => void remove()}
+            >{deleting ? 'A eliminar…' : 'Eliminar'}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
