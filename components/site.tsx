@@ -856,7 +856,6 @@ export function ContactForm() {
       <button className="button" type="submit">
         {t.prepare} <ArrowUpRight size={18} />
       </button>
-      <p className="form-note">{t.emailNote}</p>
       <output className="form-status">{status}</output>
     </form>
   );
