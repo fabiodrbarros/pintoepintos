@@ -5,6 +5,7 @@ import { PhotographicShelf } from './photographic-shelf.mjs';
 import { PhotographicPanels } from './photographic-panels.mjs';
 import { EngravedCatalog } from './engraved-catalog.mjs';
 import { catalogItems } from './catalog.mjs';
+import { translateFlow } from './flow-translations.mjs';
 
 const instances=new WeakMap();
 let instanceCount=0;
@@ -12,7 +13,7 @@ let instanceCount=0;
 /** Mount once on a connected .pinto-flow element. Safe to import during SSR.
  * Native window scroll drives one persistent scene. Call destroy() on unmount.
  */
-export function mountPintoFlow(root){
+export function mountPintoFlow(root,locale='pt'){
   if(!root?.matches?.('.pinto-flow')||!root.isConnected){
     throw new Error('mountPintoFlow requires a connected .pinto-flow element.');
   }
@@ -22,6 +23,7 @@ export function mountPintoFlow(root){
   }
   const events=new AbortController();
   let destroyed=false;
+  let copy=translateFlow(locale,materials,catalogItems);
   const listen=(target,type,listener,options={})=>target.addEventListener(type,listener,{...options,signal:events.signal});
 
   const world=root.querySelector('.wood-world');
@@ -66,7 +68,7 @@ export function mountPintoFlow(root){
     const element=document.createElement('button');
     element.type='button';
     element.className='wood-body';
-    element.setAttribute('aria-label',`Examinar madeira: ${material.name}`);
+    element.setAttribute('aria-label',`${copy.examine}: ${copy.materials[index].name}`);
     element.setAttribute('aria-controls',inspector.id);
     element.setAttribute('aria-expanded','false');
     element.tabIndex=-1;
@@ -90,7 +92,8 @@ export function mountPintoFlow(root){
       if(shelfProgress(current)<.95)return;
       const wanted=selection.wanted===index?-1:index;
       selection.choose(wanted,performance.now(),reducedMotion.matches);
-      announcement.textContent=wanted<0?'Amostra devolvida à prateleira.':`${material.name}. ${material.description}`;
+      const text=copy.materials[index];
+      announcement.textContent=wanted<0?copy.returned:`${text.name}. ${text.description}`;
       schedule();
     });
     world.append(element);
@@ -217,7 +220,7 @@ export function mountPintoFlow(root){
     showCopy(copies[3],materialIn*(1-segment(picked,.1,.45)),22*(1-materialIn));
     const detail=segment(picked,.4,.85);
     if(selection.active>=0&&displayedSample!==selection.active){
-      const material=materials[selection.active];
+      const material=copy.materials[selection.active];
       sampleName.textContent=material.name;
       sampleAppearance.textContent=material.appearance;
       sampleDescription.textContent=material.description;
@@ -263,7 +266,7 @@ export function mountPintoFlow(root){
     const active=selection.active;
     if(active<0)return;
     selection.choose(-1,performance.now(),reducedMotion.matches);
-    announcement.textContent='Amostra devolvida à prateleira.';
+    announcement.textContent=copy.returned;
     if(restoreFocus&&shelfProgress(current)>=.95)panels[active].element.focus({preventScroll:true});
     schedule();
   }
@@ -290,6 +293,7 @@ export function mountPintoFlow(root){
   measure();
   current=target=clamp((stickyTop-story.getBoundingClientRect().top)/travel);
   render(current);
+  engravedCatalog.setLocale(copy);
   const photos=[photo.src,logoPhoto.src,...catalogItems.map(item=>item.icon)].map(src=>{
     const image=new Image();image.src=src;
     return image.decode().catch(()=>{});
@@ -302,6 +306,16 @@ export function mountPintoFlow(root){
 
   const controller={
     ready,
+    setLocale(locale){
+      if(destroyed)return;
+      copy=translateFlow(locale,materials,catalogItems);
+      panels.forEach((panel,index)=>panel.element.setAttribute('aria-label',`${copy.examine}: ${copy.materials[index].name}`));
+      engravedCatalog.setLocale(copy);
+      displayedSample=-1;
+      const selected=copy.materials[selection.active];
+      announcement.textContent=selected?`${selected.name}. ${selected.description}`:'';
+      schedule();
+    },
     refresh(){if(!destroyed){measureNeeded=true;schedule();}},
     destroy(){
       if(destroyed)return;

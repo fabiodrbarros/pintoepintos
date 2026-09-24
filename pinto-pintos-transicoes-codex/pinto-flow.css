@@ -109,7 +109,7 @@
   .pinto-flow .copy-catalog .catalog-caption { display:none; }
   .pinto-flow .catalog-engraving { top:46px; width:116px; height:134px; }
   .pinto-flow .catalog-icon { top:46px; width:116px; height:134px; }
-  .pinto-flow .catalog-name { bottom:36px; font-size:28px; }
+  .pinto-flow .catalog-name { bottom:36px; font-size:26px; }
   .pinto-flow .copy-material { top:15%; left:8%; width:84%; }
   .pinto-flow .copy.copy-material h2 { font-size:clamp(26px,6.2vw,42px); line-height:1.12; letter-spacing:-.05em; white-space:normal; }
   .pinto-flow .copy-material p { margin-top:17px; }

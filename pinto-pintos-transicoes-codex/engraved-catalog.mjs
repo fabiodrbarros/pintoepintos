@@ -8,6 +8,7 @@ let catalogInstance=0;
 // pictures. Their plane follows each moving panel throughout the transition.
 export class EngravedCatalog {
   constructor(world,caption,invalidate=()=>{}){
+    this.items=catalogItems;
     this.caption=caption;
     this.invalidate=invalidate;
     this.lift=Array(6).fill(0);this.lastTime=0;this.moving=false;
@@ -52,9 +53,23 @@ export class EngravedCatalog {
   }
   updateCaption(){
     const index=this.enabled?(this.focused>=0?this.focused:this.hovered):-1;
-    this.caption.textContent=index<0?'':catalogItems[index].description;
+    this.caption.textContent=index<0?'':this.items[index].description;
     this.caption.style.opacity=index<0?0:1;
     this.invalidate();
+  }
+  setLocale(copy){
+    this.items=copy.services;
+    this.element.setAttribute('aria-label',copy.categories);
+    this.links.forEach((link,index)=>{
+      const item=this.items[index];
+      link.setAttribute('aria-label',item.name);
+      link.querySelector('.sr-only').textContent=item.description;
+      const label=link.querySelector('.catalog-name');
+      label.replaceChildren(...item.lines.map(line=>{
+        const span=document.createElement('span');span.textContent=line;return span;
+      }));
+    });
+    this.updateCaption();
   }
   tick(now,reducedMotion=false){
     const elapsed=this.lastTime?Math.min(64,now-this.lastTime):16;

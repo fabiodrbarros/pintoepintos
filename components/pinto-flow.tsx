@@ -9,8 +9,6 @@ import { useSectionScroll } from '@/hooks/use-section-scroll';
 // Fully settled intervals from choreography.mjs (including all six panels).
 const sceneStops = [[0, 0.03375], [0.21, 0.43125], [0.615, 0.755], [1, 1]] as const;
 
-const flowVersion = 'catalog-layout-v3';
-
 const flowCopy = {
   pt: {
     aria: 'Da origem à matéria',
@@ -64,6 +62,7 @@ const flowCopy = {
 
 export function PintoFlow() {
   const rootRef = useRef<HTMLElement>(null);
+  const flowRef = useRef<ReturnType<typeof mountPintoFlow> | null>(null);
   useSectionScroll(rootRef, sceneStops, '.cinema');
   const { locale, t } = useLocale();
   const copy = flowCopy[locale];
@@ -72,8 +71,13 @@ export function PintoFlow() {
     const root = rootRef.current;
     if (!root) return;
     const flow = mountPintoFlow(root);
-    return () => flow.destroy();
-  }, [flowVersion]);
+    flowRef.current = flow;
+    return () => { flow.destroy(); flowRef.current = null; };
+  }, []);
+
+  useEffect(() => {
+    flowRef.current?.setLocale(locale);
+  }, [locale]);
 
   return (
     <section
