@@ -4,6 +4,10 @@ import { useEffect, useRef, type CSSProperties } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useLocale } from '@/components/locale';
 import { mountPintoFlow } from '@/pinto-pintos-transicoes-codex/pinto-flow.mjs';
+import { useSectionScroll } from '@/hooks/use-section-scroll';
+
+// Fully settled intervals from choreography.mjs (including all six panels).
+const sceneStops = [[0, 0.03375], [0.21, 0.43125], [0.615, 0.755], [1, 1]] as const;
 
 const flowVersion = 'catalog-layout-v3';
 
@@ -60,6 +64,7 @@ const flowCopy = {
 
 export function PintoFlow() {
   const rootRef = useRef<HTMLElement>(null);
+  useSectionScroll(rootRef, sceneStops, '.cinema');
   const { locale, t } = useLocale();
   const copy = flowCopy[locale];
 

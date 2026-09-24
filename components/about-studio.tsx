@@ -7,10 +7,15 @@ import { Hammer, Ruler, Wrench } from 'lucide-react';
 import { SectionLabel } from '@/components/site';
 import { useLocale } from '@/components/locale';
 import StudioPanels from '@/components/studio-panels';
+import { useSectionScroll } from '@/hooks/use-section-scroll';
+
+// Skip the reading pauses when a new gesture starts the next transition.
+const sceneStops = [[0, 0.22 / 5.61], [2.38 / 5.61, 3.12 / 5.61], [1, 1]] as const;
 
 export function AboutStudioPage() {
   const { t } = useLocale();
   const sequence = useRef<HTMLElement>(null);
+  useSectionScroll(sequence, sceneStops, '.studio-pin', true);
   const pinned = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLDivElement>(null);
   const intro = useRef<HTMLDivElement>(null);
